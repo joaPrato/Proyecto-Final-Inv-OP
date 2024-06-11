@@ -1,8 +1,8 @@
 from . import db
-
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 
-db = SQLAlchemy()
+
 
 class EstadoOrdenCompra(db.Model):
     __tablename__ = 'estado_orden_compra'
@@ -23,7 +23,7 @@ class Articulo(db.Model):
     costo_articulo = db.Column(db.Float, nullable=False)
     punto_pedido = db.Column(db.Integer)
     stock = db.Column(db.Integer, nullable=False)
-    stock_maximo = db.Column(db.Integer)
+    demandaDiaria = db.Column(db.Integer)
     stock_seguridad = db.Column(db.Integer)
     tiempo_de_pedido = db.Column(db.Integer)
     detalle_proveedor_predeterminado_id = db.Column(db.Integer, db.ForeignKey('detalle_proveedor.id'))
@@ -56,7 +56,7 @@ class DetalleProveedor(db.Model):
 class Venta(db.Model):
     __tablename__ = 'venta'
     nro_venta = db.Column(db.Integer, primary_key=True)
-    fecha = db.Column(db.Date, nullable=False)
+    fecha = db.Column(db.Date, nullable=False, default=func.now())
     detalle_venta = db.relationship('DetalleVenta', backref='venta', lazy=True)
 
 class DetalleVenta(db.Model):
