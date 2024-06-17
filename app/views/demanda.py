@@ -2,4 +2,4 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from app import db
 from app.models import *
 
-bp = Blueprint('inventario', __name__, url_prefix='/inventario')
+bp = Blueprint('demanda', __name__, url_prefix='/demanda')
