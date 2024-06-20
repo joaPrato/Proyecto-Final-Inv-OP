@@ -54,7 +54,7 @@ class Articulo(db.Model):
     modelo_inventario = db.relationship('ModeloInventario',lazy='joined',foreign_keys=[modelo_inventario_id])
     detalle_proveedor_predeterminado= db.relationship('DetalleProveedor', lazy='joined',foreign_keys=[detalle_proveedor_predeterminado_id])
 
-    def __init__(self, codigo_articulo,nombre_articulo, coeficiente_seguridad, costo_almacenamiento, costo_de_pedido, stock, tiempo_de_pedido, detalle_proveedor_predeterminado_id, modelo_inventario_id):
+    def __init__(self,codigo_articulo,nombre_articulo, coeficiente_seguridad, costo_almacenamiento, costo_de_pedido, stock, tiempo_de_pedido, detalle_proveedor_predeterminado_id, modelo_inventario_id):
         self.codigo_articulo = codigo_articulo
         self.nombre_articulo=nombre_articulo
         self.coeficiente_seguridad = coeficiente_seguridad
@@ -65,22 +65,7 @@ class Articulo(db.Model):
         self.detalle_proveedor_predeterminado_id = detalle_proveedor_predeterminado_id
         self.modelo_inventario_id = modelo_inventario_id
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'codigo_articulo': self.codigo_articulo,
-            'nombre_articulo': self.nombre_articulo,
-            'coeficiente_seguridad': self.coeficiente_seguridad,
-            'costo_almacenamiento': self.costo_almacenamiento,
-            'costo_de_pedido': self.costo_de_pedido,
-            'stock': self.stock,
-            'tiempo_de_pedido': self.tiempo_de_pedido,
-            'detalle_proveedor_predeterminado': self.detalle_proveedor_predeterminado.serialize() if self.detalle_proveedor_predeterminado else None,
-            'modelo_inventario': self.modelo_inventario.serialize() if self.modelo_inventario else None,
-            'detalles_proveedor': [detalle.serialize() for detalle in self.detalles_proveedor]  if self.detalles_proveedor else [],
-            'demandas': [demanda.serialize() for demanda in self.demandas] if self.demandas else [],
-            'demandas_predecidas': [demanda_predecida.serialize() for demanda_predecida in self.demandas_predecidas] if self.demandas_predecidas else []
-        }
+    
 
 class OrdenCompra(db.Model):
     __tablename__ = 'orden_compra'

@@ -5,88 +5,144 @@
 {% endblock %}
 
 {% block body %}
+
+
 <h2 class="mt-2">Crear articulos</h2>
 <div class="container">
   <div class="card">
       <div class="card-body">
-          <form action="" method="POST">
-              <div class="row mb-3">
-                <div class="row mb-3">
-                  <div class="col">
-                    <label >Codigo articulo</label>
-                    <input type="number" class="form-control mb-3" name="codigo_articulo"  min="0" required>
-                  </div>
-                  <div class="col">
-                    <label >Nombre articulo</label>
-                    <input type="text" class="form-control mb-3" name="nombre_articulo" required maxlength="100">
-                  </div>
-                  <div class="col">
-                    <label >Coeficiente de seguridad</label>
-                    <input type="number" step="0.01" class="form-control mb-3" name="coeficiente_seguridad"  min="0" required>
-                  </div>
-                  <div class="col">
-                    <label >Costo almacenamiento</label>
-                    <input type="number" step="0.01" class="form-control mb-3" name="costo_almacenamiento"  min="0" required>
-                  </div>
-                </div>
-                <div class="row mb-3">
-                  <div class="col">
-                    <label >Costo pedido</label>
-                    <input type="number" step="0.01" class="form-control mb-3" name="costo_de_pedido"  min="0" required>
-                  </div>
-                  <div class="col">
-                    <label >Stock</label>
-                    <input type="number" class="form-control mb-3"  min="0" name="stock">
-                  </div>
-                  <div class="col">
-                    <label >Tiempo de pedido</label>
-                    <input type="number" class="form-control mb-3"  min="0" name="tiempo_de_pedido">
-                  </div>
-                  <div class="col">
-                    <label>Modelo de Inventario</label>
-                    <select class="form-control mb-3" name="modelo_inventario_id" required>
-                      {% for modelo_inventario in modelos_inventario %}
-                        <option value="{{ modelo_inventario.id }}">{{ modelo_inventario.nombre }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
-                <div class="col d-flex justify-content-end">
-                  <button class="btn btn-primary" type="submit">Crear</button>
-                </div>
-              </div>
-              
-          </form>
+        <form method="POST">
+          {{ form.hidden_tag() }}
+          <div class="row mb-3">
+            <div class="col">
+              <label>{{ form.codigo_articulo.label }}</label>
+              {{ form.codigo_articulo(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.nombre_articulo.label }}</label>
+              {{ form.nombre_articulo(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.coeficiente_seguridad.label }}</label>
+              {{ form.coeficiente_seguridad(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.costo_almacenamiento.label }}</label>
+              {{ form.costo_almacenamiento(class="form-control mb-3") }}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label>{{ form.costo_de_pedido.label }}</label>
+              {{ form.costo_de_pedido(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.stock.label }}</label>
+              {{ form.stock(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.tiempo_de_pedido.label }}</label>
+              {{ form.tiempo_de_pedido(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.modelo_inventario_id.label }}</label>
+              {{ form.modelo_inventario_id(class="form-control mb-3") }}
+            </div>
+          </div>
+          <div class="col d-flex justify-content-end">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
       </div>
   </div>
 </div>
 <h2 class="mt-2">Articulos</h2>
 <div class="table-responsive">
-  <table class="table table-striped table-sm">
+  <table class="table table-striped table-sm table-bordered">
     <thead>
       <tr>
-        <th scope="col">Codigo</th>
-        <th scope="col">Nombre</th>
-        <th scope="col">Coeficiente seguridad</th>
-        <th scope="col">Costo almacenamiento</th>
-        <th scope="col">Costo pedido</th>
-        <th scope="col">Stock</th>
-        <th scope="col">Modelo inventario</th>
-        <th scope="col">Editar</th>
-        <th scope="col">Eliminar</th>
+        <th scope="col" class="text-center align-middle">Codigo</th>
+        <th scope="col" class="text-center align-middle">Nombre</th>
+        <th scope="col" class="text-center align-middle">Coeficiente seguridad</th>
+        <th scope="col" class="text-center align-middle">Costo almacenamiento</th>
+        <th scope="col" class="text-center align-middle">Costo pedido</th>
+        <th scope="col" class="text-center align-middle">Stock</th>
+        <th scope="col" class="text-center align-middle">Modelo inventario</th>
+        <th scope="col" class="text-center align-middle">Editar</th>
+        <th scope="col" class="text-center align-middle">Eliminar</th>
       </tr>
     </thead>
     <tbody>
       {% for articulo in articulos %}
       <tr>
-        <td>{{articulo.codigo_articulo}}</td>
-        <td>{{articulo.nombre_articulo}}</td>
-        <td>{{articulo.coeficiente_seguridad}}</td>
-        <td>{{articulo.costo_almacenamiento}}</td>
-        <td>{{articulo.costo_de_pedido}}</td>
-        <td>{{articulo.stock}}</td>
-        <td>{{articulo.modelo_inventario.nombre}}</td>
+        <td class="text-center align-middle">{{articulo.codigo_articulo}}</td>
+        <td class="text-center align-middle">{{articulo.nombre_articulo}}</td>
+        <td class="text-center align-middle">{{articulo.coeficiente_seguridad}}</td>
+        <td class="text-center align-middle">{{articulo.costo_almacenamiento}}</td>
+        <td class="text-center align-middle">{{articulo.costo_de_pedido}}</td>
+        <td class="text-center align-middle">{{articulo.stock}}</td>
+        <td class="text-center align-middle">{{articulo.modelo_inventario.nombre}}</td>
+        <td class="text-center align-middle"><button class="btn btn-primary btn-sm" id="btn-edit{{articulo.id}}" data-bs-toggle="modal" data-bs-target="#modaleditar{{articulo.id}}">Editar</button></td>
+        <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{articulo.id}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{articulo.id}}">Eliminar</button></td>
       </tr>
+
+      <!-- modales -->
+       <!-- modales editar articulo-->
+
+       <div class="modal fade" id="modaleditar{{ articulo.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Articulo código: {{ articulo.codigo_articulo }}</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('articulos.edit', id=articulo.id) }}" method="POST">
+                        {{ form.hidden_tag() }}
+                        <label>{{ form.codigo_articulo.label }}</label>
+                        {{ form.codigo_articulo(class="form-control mb-3", value=articulo.codigo_articulo) }}
+                        <label>{{ form.nombre_articulo.label }}</label>
+                        {{ form.nombre_articulo(class="form-control mb-3", value=articulo.nombre_articulo) }}
+                        <label>{{ form.coeficiente_seguridad.label }}</label>
+                        {{ form.coeficiente_seguridad(class="form-control mb-3", value=articulo.coeficiente_seguridad) }}
+                        <label>{{ form.costo_almacenamiento.label }}</label>
+                        {{ form.costo_almacenamiento(class="form-control mb-3", value=articulo.costo_almacenamiento) }}
+                        <label>{{ form.costo_de_pedido.label }}</label>
+                        {{ form.costo_de_pedido(class="form-control mb-3", value=articulo.costo_de_pedido) }}
+                        <label>{{ form.stock.label }}</label>
+                        {{ form.stock(class="form-control mb-3", value=articulo.stock) }}
+                        <label>{{ form.tiempo_de_pedido.label }}</label>
+                        {{ form.tiempo_de_pedido(class="form-control mb-3", value=articulo.tiempo_de_pedido) }}
+                        <label>{{ form.modelo_inventario_id.label }}</label>
+                        {{ form.modelo_inventario_id(class="form-control mb-3", value=articulo.modelo_inventario_id) }}
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+       </div>
+
+      <!-- modal borrar articulo-->
+      <div class="modal fade" id="modalEliminar{{articulo.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar articulo codigo: {{articulo.codigo_articulo}}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <h4>¿Estas seguro que quieres eliminar este articulos?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <a href="{{url_for('articulos.eliminar', id=articulo.id)}}"  class=" btn btn-danger">Aceptar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {% endfor %}
       
     </tbody>
