@@ -1,6 +1,6 @@
 from . import db
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
+from flask_sqlalchemy import SQLAlchemy # type: ignore
+from sqlalchemy.sql import func # type: ignore
 import math
 
 class EstadoOrdenCompra(db.Model):

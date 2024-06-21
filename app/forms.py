@@ -1,7 +1,7 @@
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, FloatField, SelectField, SubmitField
-from wtforms.validators import DataRequired, NumberRange
+from flask_wtf import FlaskForm # type: ignore
+from wtforms import StringField, IntegerField, FloatField, SelectField, SubmitField # type: ignore
+from wtforms.validators import DataRequired, NumberRange # type: ignore
 
 class ArticuloFormCrearEditar(FlaskForm):
     codigo_articulo = IntegerField('Código artículo', validators=[DataRequired(), NumberRange(min=1)])
@@ -14,4 +14,10 @@ class ArticuloFormCrearEditar(FlaskForm):
     modelo_inventario_id = SelectField('Modelo de Inventario', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Crear')
 
+class OrdenCompraForm(FlaskForm):
+    lote = IntegerField('Lote', validators=[DataRequired()])
+    modeloOrdenCompra_id = SelectField('Modelo Orden de Compra', coerce=int, validators=[DataRequired()])
+    articulo_id = SelectField('Artículo', coerce=int, validators=[DataRequired()])
+    estado_orden_id = SelectField('Estado Orden', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Guardar')
     
