@@ -36,10 +36,6 @@
                         {{ form.lote(class="form-control") }}
                     </div>
                     <div class="form-group">
-                        {{ form.modeloOrdenCompra_id.label(class="form-label") }}
-                        {{ form.modeloOrdenCompra_id(class="form-control") }}
-                    </div>
-                    <div class="form-group">
                         {{ form.articulo_id.label(class="form-label") }}
                         {{ form.articulo_id(class="form-control") }}
                     </div>
@@ -58,7 +54,6 @@
                 <tr>
                     <th>ID</th>
                     <th>Lote</th>
-                    <th>Modelo Orden de Compra</th>
                     <th>Artículo</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -69,7 +64,6 @@
                 <tr>
                     <td>{{ orden.id }}</td>
                     <td>{{ orden.lote }}</td>
-                    <td>{{ orden.modeloOrdenCompra.nombre }}</td>
                     <td>{{ orden.articulo.nombreArticulo }}</td>
                     <td>{{ orden.estado_orden.nombre }}</td>
                     <td>
