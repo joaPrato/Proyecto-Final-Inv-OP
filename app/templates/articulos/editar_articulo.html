@@ -20,15 +20,15 @@
         </div>
         <div class="mb-3">
             <label for="coeficiente_seguridad">{{ form.coeficiente_seguridad.label }}</label>
-            {{ form.coeficiente_seguridad(class="form-control", value=articulo.coeficiente_seguridad) }}
+            {{ form.coeficiente_seguridad(class="form-control",type="number", value=articulo.coeficiente_seguridad) }}
         </div>
         <div class="mb-3">
             <label for="costo_almacenamiento">{{ form.costo_almacenamiento.label }}</label>
-            {{ form.costo_almacenamiento(class="form-control", value=articulo.costo_almacenamiento) }}
+            {{ form.costo_almacenamiento(class="form-control",type="number", value=articulo.costo_almacenamiento) }}
         </div>
         <div class="mb-3">
             <label for="costo_de_pedido">{{ form.costo_de_pedido.label }}</label>
-            {{ form.costo_de_pedido(class="form-control", value=articulo.costo_de_pedido) }}
+            {{ form.costo_de_pedido(class="form-control",type="number", value=articulo.costo_de_pedido) }}
         </div>
         <div class="mb-3">
             <label for="stock">{{ form.stock.label }}</label>
@@ -46,7 +46,7 @@
             <label for="detalle_proveedor_predeterminado_id">{{ form.detalle_proveedor_predeterminado_id.label }}</label>
             {{ form.detalle_proveedor_predeterminado_id(class="form-control", value=articulo.detalle_proveedor_predeterminado_id) }}
         </div>
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <button type="submit" class="btn btn-primary mb-3">Guardar cambios</button>
     </form>
 </div>
 

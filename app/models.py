@@ -2,12 +2,11 @@ from sqlalchemy import func
 from . import db
 from flask_sqlalchemy import SQLAlchemy 
 import math
-from app.enums import NombreEstadoCompra
 
 class EstadoOrdenCompra(db.Model):
     __tablename__ = 'estado_orden_compra'
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.Enum(NombreEstadoCompra), nullable=False)
+    nombre = db.Column(db.String(50), nullable=False)
     
     #Relaciones
     ordenes_compra=db.relationship('OrdenCompra', lazy='dynamic',backref='estado_orden_compra')
@@ -53,6 +52,7 @@ class Articulo(db.Model):
     #Relaciones
     detalle_proveedor_predeterminado = db.relationship('DetalleProveedor', foreign_keys=[detalle_proveedor_predeterminado_id], backref='articulo_predeterminado', uselist=False)
     detalles_proveedor = db.relationship('DetalleProveedor', backref='articulo', foreign_keys='DetalleProveedor.articulo_id')
+    ordenes_compra = db.relationship ('OrdenCompra',backref='articulo',lazy='dynamic')
 
     def calcular_stock_de_seguridad (articulo,detalle_proveedor,desviacion_estandar):
         coeficiente_seguridad=float(articulo.coeficiente_seguridad)

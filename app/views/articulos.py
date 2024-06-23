@@ -10,8 +10,7 @@ def get_articulos():
     form_articulos_editar= ArticuloFormEditar()
     
     form_articulo_crear.modelo_inventario_id.choices = [(m.id, m.nombre) for m in ModeloInventario.query.all()]
-    #form_articulos_editar.modelo_inventario_id.choices =   [(m.id, m.nombre) for m in ModeloInventario.query.all()]
-    #form_articulos_editar.detalle_proveedor_predeterminado_id.choices = [(d.id, d.proveedor.nombre) for d in DetalleProveedor.query.all()]
+    
 
 
     if form_articulo_crear.validate_on_submit():
