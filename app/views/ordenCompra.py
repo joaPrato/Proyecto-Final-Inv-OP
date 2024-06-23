@@ -1,6 +1,6 @@
-#from curses import flash
+
 from app.forms import OrdenCompraForm
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify # type: ignore
+from flask import Blueprint, render_template, request, redirect, url_for,flash, jsonify # type: ignore
 from app import db
 from app.models import *
 
@@ -65,4 +65,4 @@ def eliminar_orden_compra(id):
 
     return redirect(url_for('ordenCompra.get_ordenes_compra'))
 
->>>>>>> 8710b5ad6f6cde68f23b28dede4d20e57b90e2cc
+

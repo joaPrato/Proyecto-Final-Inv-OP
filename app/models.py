@@ -25,11 +25,14 @@ class DetalleProveedor(db.Model):
     __tablename__ = 'detalle_proveedor'
     id = db.Column(db.Integer, primary_key=True)
     costo_pedido_proveedor = db.Column(db.Float, nullable=False)
-    lote_optimo = db.Column(db.Float, nullable=False)#Esto se deberia calcular con una funcion
     precio_articulo = db.Column(db.Float, nullable=False)
     tiempo_demora = db.Column(db.Integer, nullable=False)
     proveedor_id = db.Column(db.Integer, db.ForeignKey('proveedor.id'), nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'))
+
+    def calcular_lote_optimo (detalle_proveedor):
+        #caluclo para obtener lote optimo
+        return
 
     
 
