@@ -1,10 +1,9 @@
-from flask import Blueprint, flash, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, flash, render_template, request, redirect, url_for, jsonify # type: ignore
 from app import db
 from app.models import *
 from app.forms import ArticuloFormCrearEditar
 
 bp = Blueprint('articulos', __name__, url_prefix='/articulos')
-
 @bp.route('/', methods=['GET', 'POST'])
 def get_articulos():
     form = ArticuloFormCrearEditar()

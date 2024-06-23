@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+<h2 class="mt-2">Crear venta</h2>
+<div class="container">
+  <div class="card">
+      <div class="card-body">
+        <form method="POST">
+          {{ form.hidden_tag() }}
+          <div class="row mb-3">
+            <div class="col">
+              <label>{{ form.nro_venta.label }}</label>
+              {{ form.nro_venta(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.cantidad.label }}</label>
+              {{ form.cantidad(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.articulo_id.label }}</label>
+              {{ form.articulo_id(class="form-control mb-3") }}
+            </div>
+            <div class="col">
+              <label>{{ form.fecha.label }}</label>
+              {{ form.fecha(class="form-control mb-3") }}
+            </div>
+          </div>
+          <div class="col d-flex justify-content-end">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+      </div>
+  </div>
+</div>
+
+
+<h2 class="mt-2">Ventas</h2>
+<div class="table-responsive">
+  <table class="table table-striped table-sm table-bordered">
+    <thead>
+      <tr>
+        <th scope="col" class="text-center align-middle">Numero de Venta</th>
+        <th scope="col" class="text-center align-middle">Cantidad</th>
+        <th scope="col" class="text-center align-middle">Código Artículo</th>
+        <th scope="col" class="text-center align-middle">Nombre Artículo</th> <!-- Añadido para mostrar el nombre del artículo -->
+        <th scope="col" class="text-center align-middle">Fecha Venta</th>
+        <th scope="col" class="text-center align-middle">Eliminar</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      {% for venta in ventas %} 
+      <tr>
+        <td class="text-center align-middle">{{ venta.nro_venta }}</td>
+        <td class="text-center align-middle">{{ venta.cantidad }}</td>
+        <td class="text-center align-middle">{{ venta.articulo.codigo_articulo }}</td>
+        <td class="text-center align-middle">{{ venta.articulo.nombre_articulo }}</td> <!-- Mostrando el nombre del artículo -->
+        <td class="text-center align-middle">{{ venta.fecha }}</td>
+        <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{ venta.nro_venta }}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{ venta.nro_venta }}">Eliminar</button>
+        </td>
+      </tr>
+
+        <!-- modal borrar venta-->
+        <div class="modal fade" id="modalEliminar{{ venta.nro_venta }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar venta numero: {{ venta.nro_venta }}, realizada en la fecha {{ venta.fecha }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <h4>¿Estas seguro que quieres eliminar esta venta?</h4>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="{{ url_for('ventas.eliminar_venta', nro_venta=venta.nro_venta) }}" class="btn btn-danger">Aceptar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% endfor %}
+      
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+      

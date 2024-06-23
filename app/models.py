@@ -1,6 +1,6 @@
 from . import db
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
+from flask_sqlalchemy import SQLAlchemy # type: ignore
+from sqlalchemy.sql import func # type: ignore
 import math
 from app.enums import NombreEstadoCompra
 
@@ -92,6 +92,7 @@ class Venta(db.Model):
     fecha = db.Column(db.Date, nullable=False, default=func.now())
     cantidad = db.Column(db.Integer, nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.codigo_articulo'), nullable=False)
+    articulo = db.relationship('Articulo', backref='ventas') # agregue este para traer el articulo de la venta
 
     def calcular_demanda_mes(articulo, mes, año):
         demanda_mes = db.session.query(func.sum(Venta.cantidad)).\
