@@ -59,9 +59,8 @@ def edit(id):
             flash('Artículo actualizado con éxito', 'success')
             return redirect(url_for('articulos.get_articulos'))
         except Exception as e:
-            print(f"Error al actualizar artículo: {str(e)}")
             db.session.rollback()
-            flash('Error al actualizar artículo', 'danger')
+            flash(f'Error al crear el artículo: {str(e)}', 'danger')
 
     # Si el formulario no es valido
     return redirect(url_for('articulos.get_articulos', form=form, articulo_id=articulo.id))

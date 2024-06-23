@@ -2,11 +2,12 @@ from . import db
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import math
+from app.enums import NombreEstadoCompra
 
 class EstadoOrdenCompra(db.Model):
     __tablename__ = 'estado_orden_compra'
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), nullable=False)
+    nombre = db.Column(db.Enum(NombreEstadoCompra), nullable=False)
     
     #Relaciones
     ordenes_compra=db.relationship('OrdenCompra', lazy='dynamic',backref='estado_orden_compra')
@@ -24,7 +25,7 @@ class DetalleProveedor(db.Model):
     __tablename__ = 'detalle_proveedor'
     id = db.Column(db.Integer, primary_key=True)
     costo_pedido_proveedor = db.Column(db.Float, nullable=False)
-    lote_optimo = db.Column(db.Float, nullable=False)
+    lote_optimo = db.Column(db.Float, nullable=False)#Esto se deberia calcular con una funcion
     precio_articulo = db.Column(db.Float, nullable=False)
     tiempo_demora = db.Column(db.Integer, nullable=False)
     proveedor_id = db.Column(db.Integer, db.ForeignKey('proveedor.id'), nullable=False)

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container mt-4">
+    <div class="btn-group" role="group" aria-label="Basic outlined example">
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#crearProveedorModal">Crear Proveedor</button>
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#crearDetalleProveedorModal">Configurar nuevo detalle proveedor</button>
+        <button type="button" class="btn btn-outline-primary">Información del proveedor por artículo</button>
+        <button type="button" class="btn btn-outline-primary">Información del proveedor por proveedor</button>
+    </div>
+</div>
+
+<!-- Modal para crear proveedor -->
+<div class="modal fade" id="crearProveedorModal" tabindex="-1" aria-labelledby="crearProveedorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearProveedorModalLabel">Crear Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('proveedores.crear_proveedor') }}">
+                    {{ form_proveedor.hidden_tag() }}
+                    <div class="mb-3">
+                        <label>{{ form_proveedor.nombre.label }}</label>
+                        {{ form_proveedor.nombre(class="form-control mb-3") }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        {{ form_proveedor.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para crear detalle proveedor -->
+<div class="modal fade" id="crearDetalleProveedorModal" tabindex="-1" aria-labelledby="crearDetalleProveedorLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="crearDetalleProveedorLabel">Configurar detalle proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('proveedores.crear_detalle_proveedor') }}">
+                    {{ form_detalle_proveedor.hidden_tag() }}
+                    <div class="mb-3">
+                        <label>{{ form_detalle_proveedor.proveedor_id.label }}</label>
+                        {{ form_detalle_proveedor.proveedor_id(class="form-control mb-3") }}
+                    </div>
+                    <div class="mb-3">
+                        <label>{{ form_detalle_proveedor.costo_pedido_proveedor.label }}</label>
+                        {{ form_detalle_proveedor.costo_pedido_proveedor(class="form-control mb-3") }}
+                    </div>
+                    <div class="mb-3">
+                        <label>{{ form_detalle_proveedor.precio_articulo.label }}</label>
+                        {{ form_detalle_proveedor.precio_articulo(class="form-control mb-3") }}
+                    </div>
+                    <div class="mb-3">
+                        <label>{{ form_detalle_proveedor.tiempo_demora.label }}</label>
+                        {{ form_detalle_proveedor.tiempo_demora(class="form-control mb-3") }}
+                    </div>
+                    <div class="mb-3">
+                        <label>{{ form_detalle_proveedor.articulo_id.label }}</label>
+                        {{ form_detalle_proveedor.articulo_id(class="form-control mb-3") }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        {{ form_detalle_proveedor.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

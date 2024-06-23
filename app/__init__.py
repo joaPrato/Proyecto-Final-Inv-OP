@@ -21,12 +21,13 @@ def create_app(config_class=Config):
         from . import models  # Importar modelos
         db.create_all()
 
-    from .views import articulos, inventario, ordenCompra, demanda, ventas
+    from .views import articulos, inventario, ordenCompra, demanda, ventas,proveedores
     app.register_blueprint(articulos.bp)
     app.register_blueprint(inventario.bp)
     app.register_blueprint(ordenCompra.bp)
     app.register_blueprint(demanda.bp)
     app.register_blueprint(ventas.bp)
+    app.register_blueprint(proveedores.bp)
 
     @app.route('/')
     def index():
