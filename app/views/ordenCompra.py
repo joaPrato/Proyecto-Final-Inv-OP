@@ -1,4 +1,4 @@
-from curses import flash
+#from curses import flash
 from app.forms import OrdenCompraForm
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify # type: ignore
 from app import db
