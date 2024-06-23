@@ -9,8 +9,6 @@
     <div class="btn-group" role="group" aria-label="Basic outlined example">
         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#crearProveedorModal">Crear Proveedor</button>
         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#crearDetalleProveedorModal">Configurar nuevo detalle proveedor</button>
-        <button type="button" class="btn btn-outline-primary">Información del proveedor por artículo</button>
-        <button type="button" class="btn btn-outline-primary">Información del proveedor por proveedor</button>
     </div>
 </div>
 
@@ -56,15 +54,15 @@
                     </div>
                     <div class="mb-3">
                         <label>{{ form_detalle_proveedor.costo_pedido_proveedor.label }}</label>
-                        {{ form_detalle_proveedor.costo_pedido_proveedor(class="form-control mb-3") }}
+                        {{ form_detalle_proveedor.costo_pedido_proveedor(class="form-control mb-3",type="number") }}
                     </div>
                     <div class="mb-3">
                         <label>{{ form_detalle_proveedor.precio_articulo.label }}</label>
-                        {{ form_detalle_proveedor.precio_articulo(class="form-control mb-3") }}
+                        {{ form_detalle_proveedor.precio_articulo(class="form-control mb-3",type="number") }}
                     </div>
                     <div class="mb-3">
                         <label>{{ form_detalle_proveedor.tiempo_demora.label }}</label>
-                        {{ form_detalle_proveedor.tiempo_demora(class="form-control mb-3") }}
+                        {{ form_detalle_proveedor.tiempo_demora(class="form-control mb-3",type="number") }}
                     </div>
                     <div class="mb-3">
                         <label>{{ form_detalle_proveedor.articulo_id.label }}</label>
@@ -79,5 +77,83 @@
         </div>
     </div>
 </div>
+
+<!-- Tabla para mostrar proveedores/detalle proveedor-->
+ {% for proveedor in proveedores %}
+<h4 class="mt-4">{{proveedor.nombre}}</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-sm table-bordered">
+      <thead>
+        <tr>
+          <th scope="col" class="text-center align-middle">Codigo</th>  
+          <th scope="col" class="text-center align-middle">Costo pedido</th>
+          <th scope="col" class="text-center align-middle">Precio articulo</th>
+          <th scope="col" class="text-center align-middle">Tiempo de demora</th>
+          <th scope="col" class="text-center align-middle">Articulo</th>
+          <th scope="col" class="text-center align-middle">Editar</th>
+          <th scope="col" class="text-center align-middle">Eliminar</th>
+        </tr>
+      </thead>
+    {% for detalle_proveedor in proveedor.detalles_proveedor %}
+        <tbody>
+            <tr>
+              <td class="text-center align-middle">{{detalle_proveedor.id}}</td>  
+              <td class="text-center align-middle">{{detalle_proveedor.costo_pedido_proveedor}}</td>
+              <td class="text-center align-middle">{{detalle_proveedor.precio_articulo}}</td>
+              <td class="text-center align-middle">{{detalle_proveedor.tiempo_demora}}</td>
+              <td class="text-center align-middle">{{detalle_proveedor.articulo.nombre_articulo}}</td>
+              <td class="text-center align-middle"><button class="btn btn-primary btn-sm" id="btn-edit{{detalle_proveedor.id}}" data-bs-toggle="modal" data-bs-target="#modaleditar{{detalle_proveedor.id}}">Editar</button></td>
+              <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{detalle_proveedor.id}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{detalle_proveedor.id}}">Eliminar</button></td>
+            </tr>
+
+             <!-- modales editar detalle proveedor-->
+            <div class="modal fade" id="modaleditar{{ detalle_proveedor.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Editar proveedor {{proveedor.nombre}} articulo {{ detalle_proveedor.articulo.nombre_articulo }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('proveedores.editar_detalle_proveedor', id=detalle_proveedor.id) }}" method="POST">
+                                {{ form_detalle_proveedor_editar.hidden_tag() }}
+                                <label>{{ form_detalle_proveedor_editar.costo_pedido_proveedor.label }}</label>
+                                {{ form_detalle_proveedor_editar.costo_pedido_proveedor(class="form-control mb-3",type="number", value=detalle_proveedor.costo_pedido_proveedor) }}
+                                <label>{{ form_detalle_proveedor_editar.precio_articulo.label }}</label>
+                                {{ form_detalle_proveedor_editar.precio_articulo(class="form-control mb-3",type="number", value=detalle_proveedor.precio_articulo) }}
+                                <label>{{ form_detalle_proveedor_editar.tiempo_demora.label }}</label>
+                                {{ form_detalle_proveedor_editar.tiempo_demora(class="form-control mb-3",type="number",value=detalle_proveedor.tiempo_demora) }}
+                                <div class="modal-footer">
+                                    {{ form_detalle_proveedor_editar.submit(class="btn btn-primary") }}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+      <!-- modal borrar articulo-->
+      <div class="modal fade" id="modalEliminar{{detalle_proveedor.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar  proveedor {{proveedor.nombre}} articulo {{ detalle_proveedor.articulo.nombre_artiuclo }}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <h4>¿Estas seguro que quieres eliminar este detalle proveedor?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <a href="{{url_for('proveedores.eliminar_detalle_proveedor', id=detalle_proveedor.id)}}"  class=" btn btn-danger">Aceptar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+ {% endfor %}
 
 {% endblock %}

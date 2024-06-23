@@ -28,7 +28,7 @@ def get_ordenes_compra():
             flash(f'Error al crear la orden de compra: {str(e)}', 'danger')
 
     ordenes_compra = OrdenCompra.query.all()
-    return render_template('ordenes_compra/lista_ordenes_compra', ordenes_compra=ordenes_compra, form=form)
+    return render_template('ordenes_compra/lista_ordenes_compra.html', ordenes_compra=ordenes_compra, form=form)
 
 @bp.route('/editar/<int:id>', methods=['GET', 'POST'])
 def edit_orden_compra(id):
@@ -50,7 +50,7 @@ def edit_orden_compra(id):
             db.session.rollback()
             flash(f'Error al actualizar la orden de compra: {str(e)}', 'danger')
 
-    return render_template('ordenes_compra/editar_orden_compra', form=form, orden=orden)
+    return render_template('ordenes_compra/editar_orden_compra.html', form=form, orden=orden)
 
 @bp.route('/eliminar/<int:id>', methods=['POST'])
 def eliminar_orden_compra(id):
@@ -63,6 +63,6 @@ def eliminar_orden_compra(id):
         db.session.rollback()
         flash(f'Error al eliminar la orden de compra: {str(e)}', 'danger')
 
-    return redirect(url_for('ordenCompra.get_ordenes_compra'))
+    return redirect(url_for('ordenCompra.get_ordenes_compra.html'))
 
 

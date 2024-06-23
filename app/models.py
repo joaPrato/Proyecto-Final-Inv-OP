@@ -1,6 +1,6 @@
+from sqlalchemy import func
 from . import db
-from flask_sqlalchemy import SQLAlchemy # type: ignore
-from sqlalchemy.sql import func # type: ignore
+from flask_sqlalchemy import SQLAlchemy 
 import math
 from app.enums import NombreEstadoCompra
 

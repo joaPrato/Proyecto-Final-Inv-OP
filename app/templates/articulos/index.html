@@ -12,50 +12,52 @@
   <div class="card">
       <div class="card-body">
         <form method="POST">
-          {{ form.hidden_tag() }}
+          {{ form_articulo_crear.hidden_tag() }}
           <div class="row mb-3">
             <div class="col">
-              <label>{{ form.codigo_articulo.label }}</label>
-              {{ form.codigo_articulo(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.codigo_articulo.label }}</label>
+              {{ form_articulo_crear.codigo_articulo(class="form-control mb-3") }}
             </div>
             <div class="col">
-              <label>{{ form.nombre_articulo.label }}</label>
-              {{ form.nombre_articulo(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.nombre_articulo.label }}</label>
+              {{ form_articulo_crear.nombre_articulo(class="form-control mb-3") }}
             </div>
             <div class="col">
-              <label>{{ form.coeficiente_seguridad.label }}</label>
-              {{ form.coeficiente_seguridad(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.coeficiente_seguridad.label }}</label>
+              {{ form_articulo_crear.coeficiente_seguridad(class="form-control mb-3") }}
             </div>
             <div class="col">
-              <label>{{ form.costo_almacenamiento.label }}</label>
-              {{ form.costo_almacenamiento(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.costo_almacenamiento.label }}</label>
+              {{ form_articulo_crear.costo_almacenamiento(class="form-control mb-3") }}
             </div>
           </div>
           <div class="row mb-3">
             <div class="col">
-              <label>{{ form.costo_de_pedido.label }}</label>
-              {{ form.costo_de_pedido(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.costo_de_pedido.label }}</label>
+              {{ form_articulo_crear.costo_de_pedido(class="form-control mb-3") }}
             </div>
             <div class="col">
-              <label>{{ form.stock.label }}</label>
-              {{ form.stock(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.stock.label }}</label>
+              {{ form_articulo_crear.stock(class="form-control mb-3") }}
             </div>
             <div class="col">
-              <label>{{ form.tiempo_de_pedido.label }}</label>
-              {{ form.tiempo_de_pedido(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.tiempo_de_pedido.label }}</label>
+              {{ form_articulo_crear.tiempo_de_pedido(class="form-control mb-3") }}
             </div>
             <div class="col">
-              <label>{{ form.modelo_inventario_id.label }}</label>
-              {{ form.modelo_inventario_id(class="form-control mb-3") }}
+              <label>{{ form_articulo_crear.modelo_inventario_id.label }}</label>
+              {{ form_articulo_crear.modelo_inventario_id(class="form-control mb-3") }}
             </div>
           </div>
           <div class="col d-flex justify-content-end">
-            {{ form.submit(class="btn btn-primary") }}
+            {{ form_articulo_crear.submit(class="btn btn-primary") }}
           </div>
         </form>
       </div>
   </div>
 </div>
+
+<!--Tabla articulos-->
 <h2 class="mt-2">Articulos</h2>
 <div class="table-responsive">
   <table class="table table-striped table-sm table-bordered">
@@ -68,6 +70,7 @@
         <th scope="col" class="text-center align-middle">Costo pedido</th>
         <th scope="col" class="text-center align-middle">Stock</th>
         <th scope="col" class="text-center align-middle">Modelo inventario</th>
+        <th scope="col" class="text-center align-middle">Proveedor predeterminado</th>
         <th scope="col" class="text-center align-middle">Editar</th>
         <th scope="col" class="text-center align-middle">Eliminar</th>
       </tr>
@@ -82,48 +85,18 @@
         <td class="text-center align-middle">{{articulo.costo_de_pedido}}</td>
         <td class="text-center align-middle">{{articulo.stock}}</td>
         <td class="text-center align-middle">{{articulo.modelo_inventario.nombre}}</td>
-        <td class="text-center align-middle"><button class="btn btn-primary btn-sm" id="btn-edit{{articulo.id}}" data-bs-toggle="modal" data-bs-target="#modaleditar{{articulo.id}}">Editar</button></td>
+        <td class="text-center align-middle">
+          {% if articulo.detalle_proveedor_predeterminado %}
+              {{ articulo.detalle_proveedor_predeterminado.proveedor.nombre }}
+          {% else %}
+              No asignado
+          {% endif %}
+        </td>
+        <td class="text-center align-middle"> <a class="btn btn-primary btn-sm" href="{{ url_for('articulos.edit', id=articulo.id) }}">Editar</a></td>
         <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{articulo.id}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{articulo.id}}">Eliminar</button></td>
       </tr>
 
       <!-- modales -->
-       <!-- modales editar articulo-->
-
-       <div class="modal fade" id="modaleditar{{ articulo.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Articulo código: {{ articulo.codigo_articulo }}</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ url_for('articulos.edit', id=articulo.id) }}" method="POST">
-                        {{ form.hidden_tag() }}
-                        <label>{{ form.codigo_articulo.label }}</label>
-                        {{ form.codigo_articulo(class="form-control mb-3", value=articulo.codigo_articulo) }}
-                        <label>{{ form.nombre_articulo.label }}</label>
-                        {{ form.nombre_articulo(class="form-control mb-3", value=articulo.nombre_articulo) }}
-                        <label>{{ form.coeficiente_seguridad.label }}</label>
-                        {{ form.coeficiente_seguridad(class="form-control mb-3", value=articulo.coeficiente_seguridad) }}
-                        <label>{{ form.costo_almacenamiento.label }}</label>
-                        {{ form.costo_almacenamiento(class="form-control mb-3", value=articulo.costo_almacenamiento) }}
-                        <label>{{ form.costo_de_pedido.label }}</label>
-                        {{ form.costo_de_pedido(class="form-control mb-3", value=articulo.costo_de_pedido) }}
-                        <label>{{ form.stock.label }}</label>
-                        {{ form.stock(class="form-control mb-3", value=articulo.stock) }}
-                        <label>{{ form.tiempo_de_pedido.label }}</label>
-                        {{ form.tiempo_de_pedido(class="form-control mb-3", value=articulo.tiempo_de_pedido) }}
-                        <label>{{ form.modelo_inventario_id.label }}</label>
-                        {{ form.modelo_inventario_id(class="form-control mb-3", value=articulo.modelo_inventario_id) }}
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-       </div>
-
       <!-- modal borrar articulo-->
       <div class="modal fade" id="modalEliminar{{articulo.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
