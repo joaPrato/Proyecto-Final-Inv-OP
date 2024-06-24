@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promedio Móvil</title>
+</head>
+<body>
+    <h1>Predicción de Demanda - Promedio Móvil</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.articulo_id.label }} {{ form.articulo_id() }}<br>
+        {{ form.cantidad_periodos.label }} {{ form.cantidad_periodos() }}<br>
+        {{ form.submit() }}
+    </form>
+</body>
+</html>
+

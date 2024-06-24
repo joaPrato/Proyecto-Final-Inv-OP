@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promedio Móvil Ponderado</title>
+</head>
+<body>
+    <h1>Predicción de Demanda - Promedio Móvil Ponderado</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{ form.articulo_id.label }} {{ form.articulo_id() }}<br>
+        {{ form.cantidad_periodos.label }} {{ form.cantidad_periodos() }}<br>
+        {{ form.factor_ponderacion1.label }} {{ form.factor_ponderacion1() }}<br>
+        {{ form.factor_ponderacion2.label }} {{ form.factor_ponderacion2() }}<br>
+        {{ form.factor_ponderacion3.label }} {{ form.factor_ponderacion3() }}<br>
+        {{ form.submit() }}
+    </form>
+</body>
+</html>
