@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Artículos que Necesitan ser Reabastecidos</h1>
+        
+        <!-- Verifica si hay artículos a mostrar -->
+        {% if articulos %}
+            <ul class="list-group">
+                <!-- Itera sobre los artículos y muestra cada uno -->
+                {% for articulo in articulos %}
+                    <li class="list-group-item">
+                        <h5 class="mb-1">{{ articulo.nombre }}</h5>
+                        <p class="mb-1"><strong>Stock:</strong> {{ articulo.stock }}</p>
+                        <p class="mb-1"><strong>Punto de Pedido:</strong> {{ articulo.punto_pedido }}</p>
+                        <!-- Agrega más detalles del artículo si es necesario -->
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay artículos que necesiten ser reabastecidos en este momento.</p>
+        {% endif %}
+        
+        <hr class="my-4">
+        <a href="{{ url_for('inventario.articulos_a_reponer') }}" class="btn btn-primary">Actualizar Lista</a>
+        <!-- Enlace para actualizar la lista, redirige a la misma página -->
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

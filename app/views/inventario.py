@@ -8,7 +8,7 @@ bp = Blueprint('inventario', __name__, url_prefix='/inventario')
 
 def articulos_a_reponer():
     # Filtrar artículos que tienen stock <= punto_pedido
-    articulos = Articulo.query.filter(Articulo.stock <= Articulo.punto_pedido).all()
+    articulos = articulo.query.filter(articulo.stock <= articulo.punto_pedido).all()
     
     # Filtrar órdenes de compra que no están pendientes
     articulos_a_reponer = []
