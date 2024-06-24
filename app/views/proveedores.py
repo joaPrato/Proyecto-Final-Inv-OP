@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, flash, render_template, request, redirect, url_for, jsonify # type: ignore
 from app import db
 from app.forms import ProveedorFrom,DetalleProveedorForm,DetalleProveedorFormEditar
 from app.models import *
