@@ -11,31 +11,39 @@ def get_ordenes_compra():
     form = OrdenCompraForm()
     form.articulo_id.choices = [(a.id, a.nombre_articulo) for a in Articulo.query.all()]
     form.estado_id.choices = [(e.id, e.nombre) for e in EstadoOrdenCompra.query.all()]
-
+    proveedores_unicos = {d.proveedor for d in DetalleProveedor.query.all()}
+    form.detalle_proveedor_id.choices = [(proveedor.id, proveedor.nombre) for proveedor in proveedores_unicos]
   
 
     if form.validate_on_submit():
-        nueva_orden = OrdenCompra(
-            lote=form.lote.data,
-            articulo_id=form.articulo_id.data,
-            estado_id=form.estado_id.data
-        )
-        try:
-            db.session.add(nueva_orden)
-            db.session.commit()
-            flash('Orden de compra creada con éxito', 'success')
-            return redirect(url_for('ordenCompra.get_ordenes_compra'))
-        except Exception as e:
-            db.session.rollback()
-            flash(f'Error al crear la orden de compra: {str(e)}', 'danger')
+        # Verificar que el detalle proveedor corresponde al artículo
+        detalle_proveedor = DetalleProveedor.query.filter_by(id=form.detalle_proveedor_id.data).first()
+        if detalle_proveedor and detalle_proveedor.articulo_id != form.articulo_id.data:
+            flash('El proveedor no vende este artículo', 'danger')
+        else:
+            nueva_orden = OrdenCompra(
+                lote=form.lote.data,
+                articulo_id=form.articulo_id.data,
+                estado_id=form.estado_id.data,
+                detalle_proveedor_id=form.detalle_proveedor_id.data
+            )
+            try:
+                db.session.add(nueva_orden)
+                db.session.commit()
+                flash('Orden de compra creada con éxito', 'success')
+                return redirect(url_for('ordenCompra.get_ordenes_compra'))
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Error al crear la orden de compra: {str(e)}', 'danger')
 
     if form.errors:
         flash(f'Errores en el formulario: {form.errors}', 'danger')
-        print("Errores del formulario:", form.errors) 
+        print("Errores del formulario:", form.errors)
 
     ordenes_compra = OrdenCompra.query.all()
+    articulos= Articulo.query.all()
 
-    return render_template('ordenes_compra/lista_ordenes_compra.html', ordenes_compra=ordenes_compra, form=form)
+    return render_template('ordenes_compra/lista_ordenes_compra.html', ordenes_compra=ordenes_compra, form=form,articulos=articulos)
 
 @bp.route('/editar/<int:id>', methods=['GET', 'POST'])
 def edit_orden_compra(id):
@@ -66,5 +74,40 @@ def eliminar_orden_compra(id):
     db.session.commit()
     flash('Orden de compra eliminada con éxito', 'success')
     return redirect(url_for('ordenCompra.get_ordenes_compra'))
+
+
+@bp.route('/crear/<int:id>', methods=['GET', 'POST'])
+def crear_orden_compra_articulo (id):
+    articulo = Articulo.query.get_or_404(id)
+    estado_orden_compra=EstadoOrdenCompra.query.filter_by(nombre='En curso').first()
+
+    form = OrdenCompraForm()
+    form.articulo_id.choices = [(articulo.id, articulo.nombre_articulo)]
+    form.estado_id.choices = [(estado_orden_compra.id, estado_orden_compra.nombre)]
+    form.detalle_proveedor_id.choices = [(dp.id, dp.proveedor.nombre) for dp in articulo.detalles_proveedor]
+
+    lote=articulo.calcular_lote_a_comprar()
+
+    if form.validate_on_submit():
+        # Crear una nueva orden de compra con los datos del formulario
+        nueva_orden = OrdenCompra(
+            lote=form.lote.data,
+            estado_id=form.estado_id.data,
+            articulo_id=articulo.id,
+            detalle_proveedor_id=form.detalle_proveedor_id.data
+        )
+        try:
+            db.session.add(nueva_orden)
+            db.session.commit()
+            flash('Orden de compra creada con éxito', 'success')
+            return redirect(url_for('ordenCompra.get_ordenes_compra'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error al crear la orden de compra: {str(e)}', 'danger')
+    
+    return render_template('ordenes_compra/crear_orden_compra_articulo.html', form=form, articulo=articulo,lote=lote)
+
+
+
 
 

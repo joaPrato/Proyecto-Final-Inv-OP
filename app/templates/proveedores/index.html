@@ -85,11 +85,11 @@
     <table class="table table-striped table-sm table-bordered">
       <thead>
         <tr>
-          <th scope="col" class="text-center align-middle">Codigo</th>  
+          <th scope="col" class="text-center align-middle">Codigo</th> 
+          <th scope="col" class="text-center align-middle">Articulo</th> 
           <th scope="col" class="text-center align-middle">Costo pedido</th>
           <th scope="col" class="text-center align-middle">Precio articulo</th>
           <th scope="col" class="text-center align-middle">Tiempo de demora</th>
-          <th scope="col" class="text-center align-middle">Articulo</th>
           <th scope="col" class="text-center align-middle">Editar</th>
           <th scope="col" class="text-center align-middle">Eliminar</th>
         </tr>
@@ -98,10 +98,10 @@
         <tbody>
             <tr>
               <td class="text-center align-middle">{{detalle_proveedor.id}}</td>  
+              <td class="text-center align-middle">{{detalle_proveedor.articulo.nombre_articulo}}</td>
               <td class="text-center align-middle">{{detalle_proveedor.costo_pedido_proveedor}}</td>
               <td class="text-center align-middle">{{detalle_proveedor.precio_articulo}}</td>
               <td class="text-center align-middle">{{detalle_proveedor.tiempo_demora}}</td>
-              <td class="text-center align-middle">{{detalle_proveedor.articulo.nombre_articulo}}</td>
               <td class="text-center align-middle"><button class="btn btn-primary btn-sm" id="btn-edit{{detalle_proveedor.id}}" data-bs-toggle="modal" data-bs-target="#modaleditar{{detalle_proveedor.id}}">Editar</button></td>
               <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{detalle_proveedor.id}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{detalle_proveedor.id}}">Eliminar</button></td>
             </tr>

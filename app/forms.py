@@ -47,9 +47,10 @@ class DetalleProveedorFormEditar(FlaskForm):
      submit=SubmitField('Guardar Cambios')
 
 class OrdenCompraForm(FlaskForm):
-    lote = IntegerField('Lote', validators=[DataRequired()])
+    lote = IntegerField('Lote', validators=[DataRequired(),NumberRange(min=0)])
     articulo_id = SelectField('Artículo', coerce=int, validators=[DataRequired()])
     estado_id = SelectField('Estado orden', coerce=int, validators=[DataRequired()])
+    detalle_proveedor_id= SelectField('Proveedor', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Guardar')
     
 class VentaFormCrearEditar(FlaskForm):

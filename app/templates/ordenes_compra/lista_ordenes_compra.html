@@ -7,7 +7,21 @@
 {% block body %}
 
 <div class="container mt-5">
-    <h1 class="mb-4">Órdenes de Compra</h1>
+  <h1 class="mb-4">Órdenes de Compra</h1>
+  <div class="btn-group">
+    <button type="button" class="btn btn-secondary mb-3">Generar orden compra para un artículo</button>
+    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split mb-3" data-bs-toggle="dropdown" aria-expanded="false">
+      <span class="visually-hidden">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu">
+      {% for articulo in articulos %}
+        <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('form-{{ articulo.id }}').submit();">{{ articulo.nombre_articulo }}</a></li>
+        <form id="form-{{ articulo.id }}" action="{{ url_for('ordenCompra.crear_orden_compra_articulo', id=articulo.id) }}" method="POST" style="display: none;">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        </form>
+      {% endfor %}
+    </ul>
+  </div>
 
     <!-- Formulario para crear nueva orden de compra -->
     <div class="card mb-4">
@@ -27,6 +41,10 @@
                     <label for="codigo_articulo">{{ form.estado_id.label }}</label>
                     {{ form.estado_id(class="form-control") }}
                 </div>
+                <div class="mb-3">
+                  <label for="codigo_articulo">{{ form.detalle_proveedor_id.label }}</label>
+                  {{ form.detalle_proveedor_id(class="form-control") }}
+                </div>
                 {{ form.submit(class="btn btn-primary") }}
             </form>
         </div>
@@ -41,6 +59,7 @@
             <th scope="col" class="text-center align-middle">Lote</th>
             <th scope="col" class="text-center align-middle">Artículo</th>
             <th scope="col" class="text-center align-middle">Estado</th>
+            <th scope="col" class="text-center align-middle">Proveedor</th>
             <th scope="col" class="text-center align-middle">Editar</th>
             <th scope="col" class="text-center align-middle">Eliminar</th>
         </tr>
@@ -52,6 +71,7 @@
             <td>{{ orden.lote }}</td>
             <td>{{ orden.articulo.nombre_articulo }}</td>
             <td>{{ orden.estado_orden_compra.nombre }}</td>
+            <td>{{ orden.detalle_proveedor.proveedor.nombre }}</td>
             <td class="text-center align-middle"> <a class="btn btn-primary btn-sm" href="{{url_for('ordenCompra.edit_orden_compra',id=orden.nro_orden_compra) }}">Editar</a></td>
             <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{orden.nro_orden_compra}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{orden.nro_orden_compra}}">Eliminar</button></td>
         </tr>

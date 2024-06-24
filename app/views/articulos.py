@@ -38,6 +38,10 @@ def get_articulos():
             db.session.rollback()
             flash(f'Error al crear el artículo: {str(e)}', 'danger')
 
+    if form_articulo_crear.errors:
+        flash(f'Errores en el formulario: {form_articulo_crear.errors}', 'danger')
+        print("Errores del formulario:", form_articulo_crear.errors)   
+
     articulos = Articulo.query.all()
     return render_template('articulos/index.html', articulos=articulos, form_articulo_crear=form_articulo_crear,form_articulos_editar=form_articulos_editar)
 

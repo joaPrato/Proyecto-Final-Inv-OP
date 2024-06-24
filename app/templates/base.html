@@ -45,37 +45,37 @@
             <div class="position-sticky pt-3">
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5000/articulos/">
+                  <a class="nav-link {% if request.path == url_for('articulos.get_articulos') %}active{% endif %}" aria-current="page"href="http://127.0.0.1:5000/articulos/">
                     <span data-feather="home"></span>
                     Articulos
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="http://127.0.0.1:5000/ordenCompra/">
+                  <a class="nav-link {% if request.path == url_for('ordenCompra.get_ordenes_compra') %}active{% endif %}" href="http://127.0.0.1:5000/ordenCompra/">
                     <span data-feather="file"></span>
                     Orden Compra
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="http://127.0.0.1:5000/ventas/">
+                  <a class="nav-link {% if request.path == url_for('ventas.get_ventas') %}active{% endif %}"href="http://127.0.0.1:5000/ventas/">
                     <span data-feather="shopping-cart"></span>
                     Ventas
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link "href="#">
                     <span data-feather="users"></span>
                     Demanda
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
+                  <a class="nav-link "href="#">
                     <span data-feather="bar-chart-2"></span>
                     Inventario
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="http://127.0.0.1:5000/proveedores/">
+                  <a class="nav-link {% if request.path == url_for('proveedores.index') %}active{% endif %}" href="http://127.0.0.1:5000/proveedores/">
                     <span data-feather="layers"></span>
                     Proveedores
                   </a>
