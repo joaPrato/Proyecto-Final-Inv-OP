@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+  <h2>Predicción con Ajuste Estacional</h2>
+  <form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.articulo_id.label }}<br>
+      {{ form.articulo_id(size=32) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+  </form>
+{% endblock %}
