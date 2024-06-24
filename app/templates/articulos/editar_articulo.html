@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <h1 class="mt-5">Editar Artículo: {{ articulo.nombre_articulo }}</h1>
+    <form action="{{ url_for('articulos.edit', id=articulo.id) }}" method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            <label for="codigo_articulo">{{ form.codigo_articulo.label }}</label>
+            {{ form.codigo_articulo(class="form-control", value=articulo.codigo_articulo) }}
+        </div>
+        <div class="mb-3">
+            <label for="nombre_articulo">{{ form.nombre_articulo.label }}</label>
+            {{ form.nombre_articulo(class="form-control", value=articulo.nombre_articulo) }}
+        </div>
+        <div class="mb-3">
+            <label for="coeficiente_seguridad">{{ form.coeficiente_seguridad.label }}</label>
+            {{ form.coeficiente_seguridad(class="form-control",type="number", value=articulo.coeficiente_seguridad) }}
+        </div>
+        <div class="mb-3">
+            <label for="costo_almacenamiento">{{ form.costo_almacenamiento.label }}</label>
+            {{ form.costo_almacenamiento(class="form-control",type="number", value=articulo.costo_almacenamiento) }}
+        </div>
+        <div class="mb-3">
+            <label for="costo_de_pedido">{{ form.costo_de_pedido.label }}</label>
+            {{ form.costo_de_pedido(class="form-control",type="number", value=articulo.costo_de_pedido) }}
+        </div>
+        <div class="mb-3">
+            <label for="stock">{{ form.stock.label }}</label>
+            {{ form.stock(class="form-control", value=articulo.stock) }}
+        </div>
+        <div class="mb-3">
+            <label for="tiempo_de_pedido">{{ form.tiempo_de_pedido.label }}</label>
+            {{ form.tiempo_de_pedido(class="form-control", value=articulo.tiempo_de_pedido) }}
+        </div>
+        <div class="mb-3">
+            <label for="modelo_inventario_id">{{ form.modelo_inventario_id.label }}</label>
+            {{ form.modelo_inventario_id(class="form-control", value=articulo.modelo_inventario_id) }}
+        </div>
+        <div class="mb-3">
+            <label for="detalle_proveedor_predeterminado_id">{{ form.detalle_proveedor_predeterminado_id.label }}</label>
+            {{ form.detalle_proveedor_predeterminado_id(class="form-control", value=articulo.detalle_proveedor_predeterminado_id) }}
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">Guardar cambios</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Órdenes de Compra</h1>
+
+    <!-- Formulario para crear nueva orden de compra -->
+    <div class="card mb-4">
+        <div class="card-header">Crear Nueva Orden de Compra</div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('ordenCompra.get_ordenes_compra') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    <label for="codigo_articulo">{{ form.lote.label }}</label>
+                    {{ form.lote(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    <label for="codigo_articulo">{{ form.articulo_id.label }}</label>
+                    {{ form.articulo_id(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    <label for="codigo_articulo">{{ form.estado_id.label }}</label>
+                    {{ form.estado_id(class="form-control") }}
+                </div>
+                {{ form.submit(class="btn btn-primary") }}
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de órdenes de compra -->
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col" class="text-center align-middle">ID</th>
+            <th scope="col" class="text-center align-middle">Lote</th>
+            <th scope="col" class="text-center align-middle">Artículo</th>
+            <th scope="col" class="text-center align-middle">Estado</th>
+            <th scope="col" class="text-center align-middle">Editar</th>
+            <th scope="col" class="text-center align-middle">Eliminar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for orden in ordenes_compra %}
+        <tr>
+            <td>{{ orden.nro_orden_compra }}</td>
+            <td>{{ orden.lote }}</td>
+            <td>{{ orden.articulo.nombre_articulo }}</td>
+            <td>{{ orden.estado_orden_compra.nombre }}</td>
+            <td class="text-center align-middle"> <a class="btn btn-primary btn-sm" href="{{url_for('ordenCompra.edit_orden_compra',id=orden.nro_orden_compra) }}">Editar</a></td>
+            <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{orden.nro_orden_compra}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{orden.nro_orden_compra}}">Eliminar</button></td>
+        </tr>
+
+        <!-- modal borrar orden compra-->
+      <div class="modal fade" id="modalEliminar{{orden.nro_orden_compra}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Eliminar orden de compra {{orden.nro_orden_compra}}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <h4>¿Estas seguro que quieres eliminar esta orden de compra?</h2>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <a href="{{url_for('ordenCompra.eliminar_orden_compra', id=orden.nro_orden_compra)}}"  class=" btn btn-danger">Aceptar</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}

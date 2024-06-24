@@ -1,6 +1,6 @@
+from sqlalchemy import func
 from . import db
-from flask_sqlalchemy import SQLAlchemy # type: ignore
-from sqlalchemy.sql import func # type: ignore
+from flask_sqlalchemy import SQLAlchemy 
 import math
 
 class EstadoOrdenCompra(db.Model):
@@ -24,11 +24,14 @@ class DetalleProveedor(db.Model):
     __tablename__ = 'detalle_proveedor'
     id = db.Column(db.Integer, primary_key=True)
     costo_pedido_proveedor = db.Column(db.Float, nullable=False)
-    lote_optimo = db.Column(db.Float, nullable=False)
     precio_articulo = db.Column(db.Float, nullable=False)
     tiempo_demora = db.Column(db.Integer, nullable=False)
     proveedor_id = db.Column(db.Integer, db.ForeignKey('proveedor.id'), nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'))
+
+    def calcular_lote_optimo (detalle_proveedor):
+        #caluclo para obtener lote optimo
+        return
 
     
 
@@ -49,6 +52,7 @@ class Articulo(db.Model):
     #Relaciones
     detalle_proveedor_predeterminado = db.relationship('DetalleProveedor', foreign_keys=[detalle_proveedor_predeterminado_id], backref='articulo_predeterminado', uselist=False)
     detalles_proveedor = db.relationship('DetalleProveedor', backref='articulo', foreign_keys='DetalleProveedor.articulo_id')
+    ordenes_compra = db.relationship ('OrdenCompra',backref='articulo',lazy='dynamic')
 
     def calcular_stock_de_seguridad (articulo,detalle_proveedor,desviacion_estandar):
         coeficiente_seguridad=float(articulo.coeficiente_seguridad)
