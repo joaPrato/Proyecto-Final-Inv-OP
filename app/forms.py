@@ -29,3 +29,14 @@ class VentaFormCrearEditar(FlaskForm):
     articulo_id = SelectField('Artículo', coerce=int, validators=[DataRequired()] )
     fecha = DateField('Fecha', validators=[DataRequired()], format='%Y-%m-%d', default=datetime.date.today) #predeterminada la fecha actual
     submit = SubmitField('Guardar Venta')
+    
+class DemandaForm(FlaskForm):
+    id = IntegerField('Numero de Demanda', validators=[DataRequired(), NumberRange(min=1)])
+    cantidad_demanda = IntegerField('Cantidad de articulos')
+    articulo_id = SelectField('Artículo', coerce=int, validators=[DataRequired()] )
+    fecha_d = DateField('Fecha', validators=[DataRequired()], format='%Y-%m-%d') 
+    fecha_inicio = DateField('Fecha de Inicio', format='%Y-%m-%d')
+    fecha_fin = DateField('Fecha de Fin', format='%Y-%m-%d')
+    submit = SubmitField('Calcular Demanda')
+    
+    

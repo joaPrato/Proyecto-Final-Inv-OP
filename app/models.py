@@ -60,7 +60,7 @@ class Articulo(db.Model):
     
     def calcular_demanda_diaria(demanda):
         cantidad_demandada=int(demanda.cantidad)
-
+    
         demanda_diaria=cantidad_demandada/30
 
         return demanda_diaria
@@ -91,11 +91,13 @@ class Venta(db.Model):
     fecha = db.Column(db.Date, nullable=False, default=func.now())
     cantidad = db.Column(db.Integer, nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.codigo_articulo'), nullable=False)
-    articulo = db.relationship('Articulo', backref='ventas') # agregue este para traer el articulo de la venta
+    articulo = db.relationship('Articulo', backref='ventas') # trae el nombre articulo de la venta
 
-    def calcular_demanda_mes(articulo, mes, año):
+    def calcular_demanda_mes(articulo, fecha):
+        mes = str(fecha.month).zfill(2)  # Formatea el mes con dos dígitos
+        año = str(fecha.year)  # Año ya es una cadena
         demanda_mes = db.session.query(func.sum(Venta.cantidad)).\
-            filter_by(articulo_id=articulo.id).\
+            filter_by(articulo_id=articulo).\
             filter(func.strftime('%m', Venta.fecha) == mes).\
             filter(func.strftime('%Y', Venta.fecha) == año).scalar()
 
@@ -105,11 +107,22 @@ class Venta(db.Model):
 class Demanda(db.Model):
     __tablename__ = 'demanda'
     id = db.Column(db.Integer, primary_key=True)
-    año = db.Column(db.Integer, nullable=False)
-    mes = db.Column(db.Integer, nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
+    fecha_d= db.Column(db.Date, nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'), nullable=False)
-
+    articulo = db.relationship('Articulo', backref='demanda') # trae el nombre articulo de la Demanda
+    
+    @classmethod
+    def existe_demanda(cls, articulo_id, fecha): #cls es self pero para el metodo
+        mes = fecha.month
+        año = fecha.year
+        
+        demanda_existente = cls.query.filter_by(articulo_id=articulo_id).\
+            filter(func.strftime('%m', cls.fecha_d) == str(mes).zfill(2)).\
+            filter(func.strftime('%Y', cls.fecha_d) == str(año)).first()
+        return demanda_existente is not None
+    
+    
   
 class DemandaPredecida(db.Model):
     __tablename__ = 'demanda_predecida'
