@@ -48,6 +48,7 @@ class Articulo(db.Model):
     tiempo_de_pedido = db.Column(db.Integer)
     modelo_inventario_id = db.Column(db.Integer, db.ForeignKey('modelo_inventario.id'), nullable=False)
     detalle_proveedor_predeterminado_id = db.Column(db.Integer, db.ForeignKey('detalle_proveedor.id'))
+    punto_pedido = db.Column(db.Integer, nullable=False)
 
     #Relaciones
     detalle_proveedor_predeterminado = db.relationship('DetalleProveedor', foreign_keys=[detalle_proveedor_predeterminado_id], backref='articulo_predeterminado', uselist=False)
