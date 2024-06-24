@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app import db
 from app.models import DemandaPredecida, Articulo
-from app.forms import ParametrosGeneralesPrediccionForm, PromedioMovilForm, PromedioMovilPonderadoForm, PromedioMovilSuavizadoForm
+from app.forms import AjusteEstacionalForm, ParametrosGeneralesPrediccionForm, PromedioMovilForm, PromedioMovilPonderadoForm, PromedioMovilSuavizadoForm, RegresionLinealForm
 
 bp = Blueprint('demanda_predecida', __name__, url_prefix='/demanda_predecida')
 
