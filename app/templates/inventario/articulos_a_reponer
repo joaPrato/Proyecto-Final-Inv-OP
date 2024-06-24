@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Artículos a Reponer</h1>
+        <form method="get" action="/">
+            <button type="submit" class="btn btn-primary mb-3">Listar Productos a Pedir</button>
+        </form>
+        
+        {% if articulos %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nombre del Artículo</th>
+                    <th>Stock</th>
+                    <th>Punto de Pedido</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for articulo in articulos %}
+                <tr>
+                    <td>{{ articulo.nombre }}</td>
+                    <td>{{ articulo.stock }}</td>
+                    <td>{{ articulo.punto_pedido }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-info">No hay artículos a reponer.</div>
+        {% endif %}
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}
