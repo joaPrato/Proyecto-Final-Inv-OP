@@ -82,7 +82,13 @@ def edit(id):
 @bp.route('/eliminar/<int:id>')
 def eliminar(id):
     articulo = Articulo.query.get_or_404(id)
-    db.session.delete(articulo)
-    db.session.commit()
-    flash('Artículo eliminado con éxito', 'success')
+    orden_compra= OrdenCompra.query.filter_by(articulo_id=id,estado_id=EstadoOrdenCompra.query.filter_by(nombre='En curso').first().id).first()
+    if not orden_compra :
+        db.session.delete(articulo)
+        db.session.commit()
+        flash('Artículo eliminado con éxito', 'success')
+        
+    else :
+        db.session.rollback()
+        flash(f'El articulo tiene una orden de compra "En curso"', 'danger')
     return redirect(url_for('articulos.get_articulos'))

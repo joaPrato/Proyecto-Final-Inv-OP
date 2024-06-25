@@ -8,20 +8,25 @@
 
 <div class="container mt-5">
   <h1 class="mb-4">Órdenes de Compra</h1>
-  <div class="btn-group">
-    <button type="button" class="btn btn-secondary mb-3">Generar orden compra para un artículo</button>
-    <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split mb-3" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="visually-hidden">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu">
-      {% for articulo in articulos %}
-        <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('form-{{ articulo.id }}').submit();">{{ articulo.nombre_articulo }}</a></li>
-        <form id="form-{{ articulo.id }}" action="{{ url_for('ordenCompra.crear_orden_compra_articulo', id=articulo.id) }}" method="POST" style="display: none;">
-          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-        </form>
-      {% endfor %}
-    </ul>
-  </div>
+  <div class="d-flex justify-content-between align-items-start">
+    <div class="btn-group">
+        <button type="button" class="btn btn-secondary mb-3">Generar orden compra para un artículo</button>
+        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split mb-3" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="visually-hidden">Toggle Dropdown</span>
+        </button>
+      
+        <ul class="dropdown-menu dropdown-menu-start">
+            {% for articulo in articulos %}
+                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('form-{{ articulo.id }}').submit();">{{ articulo.nombre_articulo }}</a></li>
+                <form id="form-{{ articulo.id }}" action="{{ url_for('ordenCompra.crear_orden_compra_articulo', id=articulo.id) }}" method="POST" style="display: none;">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                </form>
+            {% endfor %}
+        </ul>
+    </div>
+    <a href="{{ url_for('ordenCompra.actualizar_orden_finalizada') }}" class="btn btn-primary">Actualizar estado ordenes</a>
+</div>
+  
 
     <!-- Formulario para crear nueva orden de compra -->
     <div class="card mb-4">
@@ -56,10 +61,13 @@
     <thead>
         <tr>
             <th scope="col" class="text-center align-middle">ID</th>
+            <th scope="col" class="text-center align-middle">Fecha</th>
             <th scope="col" class="text-center align-middle">Lote</th>
             <th scope="col" class="text-center align-middle">Artículo</th>
             <th scope="col" class="text-center align-middle">Estado</th>
             <th scope="col" class="text-center align-middle">Proveedor</th>
+            <th scope="col" class="text-center align-middle">Demora</th>
+            <th scope="col" class="text-center align-middle">Precio articulo</th>
             <th scope="col" class="text-center align-middle">Editar</th>
             <th scope="col" class="text-center align-middle">Eliminar</th>
         </tr>
@@ -67,13 +75,26 @@
     <tbody>
         {% for orden in ordenes_compra %}
         <tr>
-            <td>{{ orden.nro_orden_compra }}</td>
-            <td>{{ orden.lote }}</td>
-            <td>{{ orden.articulo.nombre_articulo }}</td>
-            <td>{{ orden.estado_orden_compra.nombre }}</td>
-            <td>{{ orden.detalle_proveedor.proveedor.nombre }}</td>
-            <td class="text-center align-middle"> <a class="btn btn-primary btn-sm" href="{{url_for('ordenCompra.edit_orden_compra',id=orden.nro_orden_compra) }}">Editar</a></td>
-            <td class="text-center align-middle"><button class="btn btn-danger btn-sm" id="btn-edit{{orden.nro_orden_compra}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{orden.nro_orden_compra}}">Eliminar</button></td>
+          <td>{{ orden.nro_orden_compra }}</td>
+          <td>{{ orden.fecha.strftime('%Y-%m-%d') }}</td>
+          <td>{{ orden.lote }}</td>
+          <td>{{ orden.articulo.nombre_articulo }}</td>
+          <td>{{ orden.estado_orden_compra.nombre }}</td>
+          <td>{{ orden.detalle_proveedor.proveedor.nombre }}</td>
+          <td>{{ orden.detalle_proveedor.tiempo_demora }}</td>
+          <td>{{ orden.detalle_proveedor.precio_articulo }}</td>
+          <td class="text-center align-middle">
+            <a 
+                class="btn btn-primary btn-sm {% if orden.estado_orden_compra.nombre == 'Finalizado' %}disabled{% endif %}" 
+                href="{% if orden.estado_orden_compra.nombre != 'Finalizado' %}{{url_for('ordenCompra.edit_orden_compra', id=orden.nro_orden_compra) }}{% else %}#{% endif %}">
+                Editar
+            </a>
+          </td>
+          <td class="text-center align-middle">
+            <button class="btn btn-danger btn-sm" id="btn-edit{{orden.nro_orden_compra}}" data-bs-toggle="modal" data-bs-target="#modalEliminar{{orden.nro_orden_compra}}">
+                Eliminar
+            </button>
+          </td>
         </tr>
 
         <!-- modal borrar orden compra-->

@@ -36,14 +36,14 @@ class DetalleProveedorForm(FlaskForm):
      proveedor_id = SelectField('Proveedor', coerce=int, validators=[DataRequired()])
      costo_pedido_proveedor=FloatField('Costo de pedido',validators=[DataRequired(), NumberRange(min=0)])
      precio_articulo=FloatField('Precio Articulo', validators=[DataRequired(), NumberRange(min=0)])
-     tiempo_demora=IntegerField('Tiempo de demora',validators=[DataRequired(), NumberRange(min=0)])
+     tiempo_demora=IntegerField('Tiempo de demora',validators=[NumberRange(min=0)])
      articulo_id=SelectField('Articulo', coerce=int, validators=[DataRequired()])
      submit=SubmitField('Crear')
 
 class DetalleProveedorFormEditar(FlaskForm):
      costo_pedido_proveedor=FloatField('Costo de pedido',validators=[DataRequired(), NumberRange(min=0)])
      precio_articulo=FloatField('Precio Articulo', validators=[DataRequired(), NumberRange(min=0)])
-     tiempo_demora=IntegerField('Tiempo de demora',validators=[DataRequired(), NumberRange(min=0)])
+     tiempo_demora=IntegerField('Tiempo de demora',validators=[ NumberRange(min=0)])
      submit=SubmitField('Guardar Cambios')
 
 class OrdenCompraForm(FlaskForm):

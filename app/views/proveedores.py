@@ -47,6 +47,7 @@ def crear_detalle_proveedor():
     form.articulo_id.choices = [(a.id, a.nombre_articulo) for a in Articulo.query.all()]
 
     if form.validate_on_submit(): 
+        
         nuevo_detalle_proveedor=DetalleProveedor(
             proveedor_id=form.proveedor_id.data,
             costo_pedido_proveedor=form.costo_pedido_proveedor.data,
@@ -62,6 +63,9 @@ def crear_detalle_proveedor():
         except Exception as e:
             db.session.rollback()
             flash(f'Error al crear detalle provedor: {e}', 'danger')
+    if form.errors:
+        flash(f'Errores en el formulario: {form.errors}', 'danger')
+        print("Errores del formulario:", form.errors) 
            
     
     return redirect(url_for('proveedores.index', form=form))

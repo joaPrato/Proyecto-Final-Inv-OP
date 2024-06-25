@@ -63,7 +63,7 @@ class Articulo(db.Model):
 
         return stock_de_seguridad
     
-    from datetime import datetime
+
 
 
 
@@ -134,6 +134,7 @@ class OrdenCompra(db.Model):
     __tablename__ = 'orden_compra'
     lote = db.Column(db.Integer, nullable=False)
     nro_orden_compra = db.Column(db.Integer, primary_key=True)
+    fecha= db.Column(db.Date, nullable=False,default=func.current_date())
     estado_id = db.Column(db.Integer, db.ForeignKey('estado_orden_compra.id'), nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'), nullable=False)
     detalle_proveedor_id= db.Column(db.Integer, db.ForeignKey('detalle_proveedor.id'), nullable=False)
