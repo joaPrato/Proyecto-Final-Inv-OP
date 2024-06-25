@@ -1,3 +1,4 @@
+from datetime import date
 from sqlalchemy import func,desc
 from . import db
 from flask_sqlalchemy import SQLAlchemy 
@@ -62,9 +63,13 @@ class Articulo(db.Model):
 
         return stock_de_seguridad
     
+    from datetime import datetime
+
+
+
     def calcular_demanda_diaria(self):
         # Obtener la última demanda
-        demanda = Demanda.query.filter_by(articulo_id=self.id).order_by(desc(Demanda.año), desc(Demanda.mes)).first()
+        demanda = Demanda.query.filter_by(articulo_id=self.id).order_by(desc(Demanda.fecha_d)).first()
         # Obtener la última demanda predecida
         demanda_predecida = DemandaPredecida.query.filter_by(articulo_id=self.id).order_by(desc(DemandaPredecida.año), desc(DemandaPredecida.mes)).first()
 
@@ -73,7 +78,8 @@ class Articulo(db.Model):
         # Verificar si se encontró alguna demanda o demanda predecida
         if demanda and demanda_predecida:
             # Comparar las fechas para determinar cuál usar
-            if (demanda.año > demanda_predecida.año) or (demanda.año == demanda_predecida.año and demanda.mes > demanda_predecida.mes):
+            fecha_predecida = date(demanda_predecida.año, demanda_predecida.mes, 1)
+            if demanda.fecha_d > fecha_predecida:
                 cantidad_demandada = demanda.cantidad
             else:
                 cantidad_demandada = demanda_predecida.cantidad
@@ -81,10 +87,12 @@ class Articulo(db.Model):
             cantidad_demandada = demanda.cantidad
         elif demanda_predecida:
             cantidad_demandada = demanda_predecida.cantidad
-        
+
         demanda_diaria = cantidad_demandada / 30
 
         return demanda_diaria
+
+
     
     def calcular_punto_de_pedido(self):
         # Solo para artículos con modelo inventario lote fijo
