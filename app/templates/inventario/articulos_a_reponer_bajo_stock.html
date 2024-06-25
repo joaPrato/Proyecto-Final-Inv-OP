@@ -28,7 +28,7 @@
                     <ul class="list-group">
                         {% for articulo in articulos_a_reponer %}
                             <li class="list-group-item">
-                                <h5 class="mb-1">{{ articulo.nombre }}</h5>
+                                <h5 class="mb-1">{{ articulo.nombre_articulo }}</h5>
                                 <p class="mb-1"><strong>Stock:</strong> {{ articulo.stock }}</p>
                                 <p class="mb-1"><strong>Punto de Pedido:</strong> {{ articulo.calcular_punto_de_pedido() }}</p>
                             </li>
@@ -49,9 +49,9 @@
                     <ul class="list-group">
                         {% for articulo in articulos_bajo_stock_seguridad %}
                             <li class="list-group-item">
-                                <h5 class="mb-1">{{ articulo.nombre }}</h5>
+                                <h5 class="mb-1">{{ articulo.nombre_articulo }}</h5>
                                 <p class="mb-1"><strong>Stock:</strong> {{ articulo.stock }}</p>
-                                <p class="mb-1"><strong>Stock de Seguridad:</strong> {{ articulo.stock_seguridad }}</p>
+                                <p class="mb-1"><strong>Stock de Seguridad:</strong> {{ articulo.calcular_stock_de_seguridad() }}</p>
                             </li>
                         {% endfor %}
                     </ul>

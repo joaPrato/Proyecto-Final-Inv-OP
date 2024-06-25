@@ -17,12 +17,12 @@ def articulos_a_reponer_bajo_stock():
     # Filtrar artículos sin órdenes de compra pendientes
     articulos_a_reponer = []
     for articulo in articulos_bajo_stock:
-        orden_pendiente = OrdenCompra.query.filter_by(articulo_id=articulo.id, estado_id='Pendiente').first()
-        if not orden_pendiente:
+        orden_en_curso = OrdenCompra.query.filter_by(articulo_id=articulo.id, estado_id='En curso').first()
+        if not orden_en_curso:
             articulos_a_reponer.append(articulo)
     
     # Filtrar artículos bajo el stock de seguridad
-    articulos_bajo_stock_seguridad = [articulo for articulo in articulos if articulo.stock <= articulo.calcular_stock_de_seguridad]
+    articulos_bajo_stock_seguridad = [articulo for articulo in articulos if articulo.stock <= articulo.calcular_stock_de_seguridad()]
 
     return render_template('inventario/articulos_a_reponer_bajo_stock.html', articulos_a_reponer=articulos_a_reponer,
                                                                   articulos_bajo_stock_seguridad=articulos_bajo_stock_seguridad)

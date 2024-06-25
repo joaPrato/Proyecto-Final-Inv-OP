@@ -61,7 +61,7 @@ class Articulo(db.Model):
 
         stock_de_seguridad = coeficiente_seguridad * desviacion_estandar * math.sqrt(demora_proveedor)
 
-        return stock_de_seguridad
+        return int(stock_de_seguridad)
     
 
 
@@ -90,7 +90,7 @@ class Articulo(db.Model):
 
         demanda_diaria = cantidad_demandada / 30
 
-        return demanda_diaria
+        return int(demanda_diaria)
 
 
     
@@ -103,7 +103,7 @@ class Articulo(db.Model):
 
         punto_de_pedido = demanda_diaria * demora_proveedor + stock_seguridad
 
-        return punto_de_pedido
+        return int(punto_de_pedido)
     
     def calcular_lote_a_comprar(self):
         if self.modelo_inventario.nombre == 'Lote fijo' and self.detalle_proveedor_predeterminado:
