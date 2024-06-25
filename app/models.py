@@ -169,12 +169,11 @@ class Demanda(db.Model):
     
     @classmethod
     def existe_demanda(cls, articulo_id, fecha): #cls es self pero para el metodo
-        mes = fecha.month
-        año = fecha.year
+        mes_año = fecha.strftime('%Y-%m')
         
         demanda_existente = cls.query.filter_by(articulo_id=articulo_id).\
-            filter(func.strftime('%m', cls.fecha_d) == str(mes).zfill(2)).\
-            filter(func.strftime('%Y', cls.fecha_d) == str(año)).first()
+            filter(func.strftime('%Y-%m', cls.fecha_d) == mes_año).first()
+        
         return demanda_existente is not None
     
     
