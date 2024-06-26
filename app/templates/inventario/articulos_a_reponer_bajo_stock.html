@@ -28,9 +28,21 @@
                     <ul class="list-group">
                         {% for articulo in articulos_a_reponer %}
                             <li class="list-group-item">
-                                <h5 class="mb-1">{{ articulo.nombre_articulo }}</h5>
-                                <p class="mb-1"><strong>Stock:</strong> {{ articulo.stock }}</p>
-                                <p class="mb-1"><strong>Punto de Pedido:</strong> {{ articulo.calcular_punto_de_pedido() }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="mb-1">{{ articulo.nombre_articulo }}</h5>
+                                        <p class="mb-1"><strong>Stock:</strong> {{ articulo.stock }}</p>
+                                        <p class="mb-1"><strong>Modelo de inventario:</strong> {{ articulo.modelo_inventario.nombre }}</p>
+                                        {% if articulo.modelo_inventario.nombre == 'Lote fijo' %}
+                                            <p class="mb-1"><strong>Punto de Pedido:</strong> {{ articulo.calcular_punto_de_pedido() }}</p>
+                                        {% elif articulo.modelo_inventario.nombre == 'Intervalo fijo' %}
+                                            <p class="mb-1"><strong>Ya alcanzo el tiempo entre pedidos:</strong> {{ articulo.tiempo_de_pedido }} días</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-auto">
+                                        <a href="{{ url_for('ordenCompra.crear_orden_compra_articulo', id=articulo.id) }}" class="btn btn-dark mt-4">Crear orden de compra</a>
+                                    </div>
+                                </div>
                             </li>
                         {% endfor %}
                     </ul>
