@@ -5,14 +5,23 @@ from app.forms import  ParametrosGeneralesPrediccionForm
 
 bp = Blueprint('demanda_predecida', __name__, url_prefix='/demanda_predecida')
 
+
+@bp.route('/', methods=['GET', 'POST'])
+def index():
+    form = ParametrosGeneralesPrediccionForm()
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+    
+    return render_template('demanda_predecida/index.html', form=form )
+
 @bp.route('/parametros', methods=['GET', 'POST'])
 def parametros():
     form = ParametrosGeneralesPrediccionForm()
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
     if form.validate_on_submit():
         # Guarda los parámetros generales
         flash('Parámetros guardados exitosamente', 'success')
         return redirect(url_for('demanda_predecida.parametros'))
-    return render_template('demanda_predecida/parametros.html', form=form, )
+    return render_template('demanda_predecida/index.html', form=form )
 
 @bp.route('/promedio_movil', methods=['GET', 'POST'])
 def promedio_movil():
@@ -28,7 +37,7 @@ def promedio_movil():
         except ValueError as e:
             flash(str(e), 'danger')
         return redirect(url_for('demanda_predecida.resultados'))
-    return render_template('demanda_predecida/promedio_movil.html', form=form)
+    return render_template('demanda_predecida/index.html', form=form)
 
 @bp.route('/promedio_movil_ponderado', methods=['GET', 'POST'])
 def promedio_movil_ponderado():
@@ -45,7 +54,7 @@ def promedio_movil_ponderado():
         except ValueError as e:
             flash(str(e), 'danger')
         return redirect(url_for('demanda_predecida.resultados'))
-    return render_template('demanda_predecida/promedio_movil_ponderado.html', form=form)
+    return render_template('demanda_predecida/index.html', form=form)
 
 @bp.route('/promedio_movil_ponderado', methods=['GET', 'POST'])
 def promedio_movil_suavizado():
@@ -62,7 +71,7 @@ def promedio_movil_suavizado():
         except ValueError as e:
             flash(str(e), 'danger')
         return redirect(url_for('demanda_predecida.resultados'))
-    return render_template('demanda_predecida/promedio_movil_suavizado.html', form=form)
+    return render_template('demanda_predecida/index.html', form=form)
 
 @bp.route('/regresionLineal', methods=['GET', 'POST'])
 def regresion_lineal():
@@ -76,7 +85,7 @@ def regresion_lineal():
             flash(f'Predicción: {prediccion}', 'success')
         except Exception as e:
             flash(str(e), 'danger')
-    return render_template('regresion_lineal.html', form=form)
+    return render_template('demanda_predecida/index.html', form=form)
 
 @bp.route('/ajusteEstacional', methods=['GET', 'POST'])
 def ajuste_estacional():
@@ -91,10 +100,10 @@ def ajuste_estacional():
             flash(f'Predicciones: {predicciones}', 'success')
         except Exception as e:
             flash(str(e), 'danger')
-    return render_template('demanda_predecida/ajuste_estacional.html', form=form)
+    return render_template('demanda_predecida/index.html', form=form)
 
 
 @bp.route('/resultados', methods=['GET'])
 def resultados():
     demandas_predecidas = DemandaPredecida.query.all()
-    return render_template('demanda_predecida/resultados.html', demandas_predecidas=demandas_predecidas)
+    return render_template('demanda_predecida/index.html', demandas_predecidas=demandas_predecidas)
