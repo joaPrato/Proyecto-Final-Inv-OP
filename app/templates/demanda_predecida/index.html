@@ -47,6 +47,7 @@
                     </form>
                 </div>
             </div>
+            
             <div class="table-responsive mt-3">
                 <table class="table table-striped table-sm table-bordered">
                   <thead>
@@ -55,21 +56,22 @@
                       <th scope="col" class="text-center align-middle">Nombre de Metododo</th>
                       <th scope="col" class="text-center align-middle">Error en Demanda Prediccion</th>
                       <th scope="col" class="text-center align-middle">Cantidad de Periodos</th>
-                      <th scope="col" class="text-center align-middle">Numero Raiz</th>
-                      <th scope="col" class="text-center align-middle">Alfa</th>
+                      
 
                     </tr>
                   </thead>
                   <tbody>
-                   
-                    <tr>
-                      <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
-                      <td class="text-center align-middle">{{ form.nombreMetodo }}</td>
-                      <td class="text-center align-middle">{{ form.error_DP}}</td>
-                      <td class="text-center align-middle">{{ form.cantidad_periodos }}</td>
-                      <td class="text-center align-middle">{{ form.numero_raiz }}</td>
-                      <td class="text-center align-middle">{{ form.alfa }}</td>
-                    </tr>
+                    {% for errores in errores %}
+                        {% if error.nombreMetodo == 'promedio movil' %}
+                            <tr>
+                            <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
+                            <td class="text-center align-middle">{{ form.nombreMetodo }}</td>
+                            <td class="text-center align-middle">{{ form.error_DP}}</td>
+                            <td class="text-center align-middle">{{ form.cantidad_periodos }}</td>
+                            
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
                   
                   </tbody>
                 </table>
@@ -148,6 +150,35 @@
                     </form>     
                 </div>
             </div>
+            <div class="table-responsive mt-3">
+                <table class="table table-striped table-sm table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center align-middle">Articulo</th>
+                      <th scope="col" class="text-center align-middle">Nombre de Metododo</th>
+                      <th scope="col" class="text-center align-middle">Error en Demanda Prediccion</th>
+                      <th scope="col" class="text-center align-middle">Alfa</th>
+                      <th scope="col" class="text-center align-middle">Prediccion Raiz</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for errores in errores %}
+                        {% if error.nombreMetodo == 'promedio movil suavizado' %}
+                            <tr>
+                            <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
+                            <td class="text-center align-middle">{{ form.nombreMetodo }}</td>
+                            <td class="text-center align-middle">{{ form.error_DP}}</td>
+                            <td class="text-center align-middle">{{ form.alfa }}</td>
+                            <td class="text-center align-middle">{{ form.numero_raiz }}</td>
+                            
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                  
+                  </tbody>
+                </table>
+            </div>    
         </div>            
 
         <!-- Pestaña Regresión Lineal -->
@@ -166,6 +197,30 @@
                     </form>     
                 </div>
             </div>
+            <div class="table-responsive mt-3">
+                <table class="table table-striped table-sm table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center align-middle">Articulo</th>
+                      <th scope="col" class="text-center align-middle">Nombre de Metododo</th>
+                      <th scope="col" class="text-center align-middle">Error en Demanda Prediccion</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for errores in errores %}
+                        {% if error.nombreMetodo == 'regresion lineal' %}
+                            <tr>
+                            <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
+                            <td class="text-center align-middle">{{ form.nombreMetodo }}</td>
+                            <td class="text-center align-middle">{{ form.error_DP}}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                  
+                  </tbody>
+                </table>
+            </div>    
         </div>            
 
         <!-- Pestaña Ajuste Estacional -->
@@ -184,8 +239,32 @@
                     </form>     
                 </div>
             </div>
+            <div class="table-responsive mt-3">
+                <table class="table table-striped table-sm table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center align-middle">Articulo</th>
+                      <th scope="col" class="text-center align-middle">Nombre de Metododo</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for errores in errores %}
+                        {% if error.nombreMetodo == 'ajuste estacional' %}
+                            <tr>
+                            <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
+                            <td class="text-center align-middle">{{ form.nombreMetodo }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                  
+                  </tbody>
+                </table>
+            </div> 
+
         </div>            
     </div>
+    
 </div>
 
 

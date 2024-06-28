@@ -80,6 +80,7 @@ class ParametrosGeneralesPrediccionForm(FlaskForm):
     factores_ponderacion = FieldList(FormField(FactorPonderacionForm), min_entries=1, max_entries=10 )
     alfa = FloatField('Valor del Coeficiente Alfa')
     prediccion_raiz = FloatField('Predicción Raíz')
+    
     submitParametrosGeneralesPrediccion = SubmitField('Guardar Parámetros')
     submitPromedioMovil = SubmitField('Predecir Demanda')
     submitPromedioMovilPonderado = SubmitField('Predecir Demanda')
