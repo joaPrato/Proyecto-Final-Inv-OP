@@ -1,3 +1,4 @@
+from datetime import date
 from sqlalchemy import func,desc
 from . import db
 from flask_sqlalchemy import SQLAlchemy 
@@ -47,7 +48,6 @@ class Articulo(db.Model):
     tiempo_de_pedido = db.Column(db.Integer)
     modelo_inventario_id = db.Column(db.Integer, db.ForeignKey('modelo_inventario.id'), nullable=False)
     detalle_proveedor_predeterminado_id = db.Column(db.Integer, db.ForeignKey('detalle_proveedor.id'))
-    punto_pedido = db.Column(db.Integer, nullable=False)
 
     #Relaciones
     detalle_proveedor_predeterminado = db.relationship('DetalleProveedor', foreign_keys=[detalle_proveedor_predeterminado_id], backref='articulo_predeterminado', uselist=False)
@@ -61,11 +61,15 @@ class Articulo(db.Model):
 
         stock_de_seguridad = coeficiente_seguridad * desviacion_estandar * math.sqrt(demora_proveedor)
 
-        return stock_de_seguridad
+        return int(stock_de_seguridad)
     
+
+
+
+
     def calcular_demanda_diaria(self):
         # Obtener la última demanda
-        demanda = Demanda.query.filter_by(articulo_id=self.id).order_by(desc(Demanda.año), desc(Demanda.mes)).first()
+        demanda = Demanda.query.filter_by(articulo_id=self.id).order_by(desc(Demanda.fecha_d)).first()
         # Obtener la última demanda predecida
         demanda_predecida = DemandaPredecida.query.filter_by(articulo_id=self.id).order_by(desc(DemandaPredecida.año), desc(DemandaPredecida.mes)).first()
 
@@ -74,7 +78,8 @@ class Articulo(db.Model):
         # Verificar si se encontró alguna demanda o demanda predecida
         if demanda and demanda_predecida:
             # Comparar las fechas para determinar cuál usar
-            if (demanda.año > demanda_predecida.año) or (demanda.año == demanda_predecida.año and demanda.mes > demanda_predecida.mes):
+            fecha_predecida = date(demanda_predecida.año, demanda_predecida.mes, 1)
+            if demanda.fecha_d > fecha_predecida:
                 cantidad_demandada = demanda.cantidad
             else:
                 cantidad_demandada = demanda_predecida.cantidad
@@ -82,10 +87,12 @@ class Articulo(db.Model):
             cantidad_demandada = demanda.cantidad
         elif demanda_predecida:
             cantidad_demandada = demanda_predecida.cantidad
-        
+
         demanda_diaria = cantidad_demandada / 30
 
-        return demanda_diaria
+        return int(demanda_diaria)
+
+
     
     def calcular_punto_de_pedido(self):
         # Solo para artículos con modelo inventario lote fijo
@@ -96,7 +103,7 @@ class Articulo(db.Model):
 
         punto_de_pedido = demanda_diaria * demora_proveedor + stock_seguridad
 
-        return punto_de_pedido
+        return int(punto_de_pedido)
     
     def calcular_lote_a_comprar(self):
         if self.modelo_inventario.nombre == 'Lote fijo' and self.detalle_proveedor_predeterminado:
@@ -127,6 +134,7 @@ class OrdenCompra(db.Model):
     __tablename__ = 'orden_compra'
     lote = db.Column(db.Integer, nullable=False)
     nro_orden_compra = db.Column(db.Integer, primary_key=True)
+    fecha= db.Column(db.Date, nullable=False,default=func.current_date())
     estado_id = db.Column(db.Integer, db.ForeignKey('estado_orden_compra.id'), nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'), nullable=False)
     detalle_proveedor_id= db.Column(db.Integer, db.ForeignKey('detalle_proveedor.id'), nullable=False)
@@ -161,12 +169,11 @@ class Demanda(db.Model):
     
     @classmethod
     def existe_demanda(cls, articulo_id, fecha): #cls es self pero para el metodo
-        mes = fecha.month
-        año = fecha.year
+        mes_año = fecha.strftime('%Y-%m')
         
         demanda_existente = cls.query.filter_by(articulo_id=articulo_id).\
-            filter(func.strftime('%m', cls.fecha_d) == str(mes).zfill(2)).\
-            filter(func.strftime('%Y', cls.fecha_d) == str(año)).first()
+            filter(func.strftime('%Y-%m', cls.fecha_d) == mes_año).first()
+        
         return demanda_existente is not None
     
     

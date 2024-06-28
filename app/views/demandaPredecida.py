@@ -81,7 +81,7 @@ def ajuste_estacional():
             flash(f'Predicciones: {predicciones}', 'success')
         except Exception as e:
             flash(str(e), 'danger')
-    return render_template('ajuste_estacional.html', form=form)
+    return render_template('demanda_predecida/ajuste_estacional.html', form=form)
 
 
 @bp.route('/resultados', methods=['GET'])

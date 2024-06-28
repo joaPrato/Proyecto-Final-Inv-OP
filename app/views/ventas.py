@@ -29,7 +29,6 @@ def crear_venta():
             articulo.stock -= cantidad # Restar la cantidad vendida del stock del artículo
             
             nueva_venta= Venta(
-            nro_venta= form.nro_venta.data, 
             fecha=form.fecha.data, 
             cantidad= form.cantidad.data,
             articulo_id= form.articulo_id.data

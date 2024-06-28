@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Inventario</h1>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" id="inventarioTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="reponer-tab" data-bs-toggle="tab" href="#reponer" role="tab" aria-controls="reponer" aria-selected="true">Artículos a Reponer</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="seguridad-tab" data-bs-toggle="tab" href="#seguridad" role="tab" aria-controls="seguridad" aria-selected="false">Artículos Bajo Stock de Seguridad</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content" id="inventarioTabContent">
+        <!-- Pestaña Artículos a Reponer -->
+        <div class="tab-pane fade show active" id="reponer" role="tabpanel" aria-labelledby="reponer-tab">
+            <div class="container mt-4">
+                <h2>Artículos a Reponer</h2>
+                {% if articulos_a_reponer %}
+                    <ul class="list-group">
+                        {% for articulo in articulos_a_reponer %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5 class="mb-1">{{ articulo.nombre_articulo }}</h5>
+                                        <p class="mb-1"><strong>Stock:</strong> {{ articulo.stock }}</p>
+                                        <p class="mb-1"><strong>Modelo de inventario:</strong> {{ articulo.modelo_inventario.nombre }}</p>
+                                        {% if articulo.modelo_inventario.nombre == 'Lote fijo' %}
+                                            <p class="mb-1"><strong>Punto de Pedido:</strong> {{ articulo.calcular_punto_de_pedido() }}</p>
+                                        {% elif articulo.modelo_inventario.nombre == 'Intervalo fijo' %}
+                                            <p class="mb-1"><strong>Ya alcanzo el tiempo entre pedidos:</strong> {{ articulo.tiempo_de_pedido }} días</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-auto">
+                                        <a href="{{ url_for('ordenCompra.crear_orden_compra_articulo', id=articulo.id) }}" class="btn btn-dark mt-4">Crear orden de compra</a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hay artículos que necesiten ser reabastecidos en este momento.</p>
+                {% endif %}
+                <a href="{{ url_for('inventario.articulos_a_reponer_bajo_stock') }}" class="btn btn-primary">Actualizar Lista</a>
+            </div>
+        </div>
+
+        <!-- Pestaña Artículos Bajo Stock de Seguridad -->
+        <div class="tab-pane fade" id="seguridad" role="tabpanel" aria-labelledby="seguridad-tab">
+            <div class="container mt-4">
+                <h2>Artículos Bajo Stock de Seguridad</h2>
+                {% if articulos_bajo_stock_seguridad %}
+                    <ul class="list-group">
+                        {% for articulo in articulos_bajo_stock_seguridad %}
+                            <li class="list-group-item">
+                                <h5 class="mb-1">{{ articulo.nombre_articulo }}</h5>
+                                <p class="mb-1"><strong>Stock:</strong> {{ articulo.stock }}</p>
+                                <p class="mb-1"><strong>Stock de Seguridad:</strong> {{ articulo.calcular_stock_de_seguridad() }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hay artículos que hayan alcanzado o estén por debajo del stock de seguridad en este momento.</p>
+                {% endif %}
+                <a href="{{ url_for('inventario.articulos_a_reponer_bajo_stock') }}" class="btn btn-primary">Actualizar Lista</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzjI4I4zW8G4PS7vvJzGOKjTIG8pf7LJATxtVf6CkzQK" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuLaS8h1FlkdzJ7T5fHTmZJg0uQ84ls0i+b1qaD6rrZzQ8Ck5W2hbUId8+VYkYr6" crossorigin="anonymous"></script>
+{% endblock %}
+

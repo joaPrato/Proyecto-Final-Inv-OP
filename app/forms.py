@@ -36,14 +36,14 @@ class DetalleProveedorForm(FlaskForm):
      proveedor_id = SelectField('Proveedor', coerce=int, validators=[DataRequired()])
      costo_pedido_proveedor=FloatField('Costo de pedido',validators=[DataRequired(), NumberRange(min=0)])
      precio_articulo=FloatField('Precio Articulo', validators=[DataRequired(), NumberRange(min=0)])
-     tiempo_demora=IntegerField('Tiempo de demora',validators=[DataRequired(), NumberRange(min=0)])
+     tiempo_demora=IntegerField('Tiempo de demora',validators=[NumberRange(min=0)])
      articulo_id=SelectField('Articulo', coerce=int, validators=[DataRequired()])
      submit=SubmitField('Crear')
 
 class DetalleProveedorFormEditar(FlaskForm):
      costo_pedido_proveedor=FloatField('Costo de pedido',validators=[DataRequired(), NumberRange(min=0)])
      precio_articulo=FloatField('Precio Articulo', validators=[DataRequired(), NumberRange(min=0)])
-     tiempo_demora=IntegerField('Tiempo de demora',validators=[DataRequired(), NumberRange(min=0)])
+     tiempo_demora=IntegerField('Tiempo de demora',validators=[ NumberRange(min=0)])
      submit=SubmitField('Guardar Cambios')
 
 class OrdenCompraForm(FlaskForm):
@@ -54,19 +54,17 @@ class OrdenCompraForm(FlaskForm):
     submit = SubmitField('Guardar')
     
 class VentaFormCrearEditar(FlaskForm):
-    nro_venta = IntegerField('Numero de venta', validators=[DataRequired(), NumberRange(min=1)])
     cantidad = IntegerField('Cantidad de articulos', validators=[DataRequired(), NumberRange(min=1)])
     articulo_id = SelectField('Artículo', coerce=int, validators=[DataRequired()] )
     fecha = DateField('Fecha', validators=[DataRequired()], format='%Y-%m-%d', default=datetime.date.today) #predeterminada la fecha actual
     submit = SubmitField('Guardar Venta')
     
 class DemandaForm(FlaskForm):
-    id = IntegerField('Numero de Demanda', validators=[DataRequired(), NumberRange(min=1)])
     cantidad_demanda = IntegerField('Cantidad de articulos')
     articulo_id = SelectField('Artículo', coerce=int, validators=[DataRequired()] )
     fecha_d = DateField('Fecha', validators=[DataRequired()], format='%Y-%m-%d') 
-    fecha_inicio = DateField('Fecha de Inicio', format='%Y-%m-%d')
-    fecha_fin = DateField('Fecha de Fin', format='%Y-%m-%d')
+    fecha_inicio = DateField('Fecha de Inicio', format='%Y-%m')
+    fecha_fin = DateField('Fecha de Fin', format='%Y-%m')
     submit = SubmitField('Calcular Demanda')
     
 class ParametrosGeneralesPrediccionForm(FlaskForm):
