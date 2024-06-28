@@ -7,12 +7,12 @@ from datetime import datetime
 bp = Blueprint('demanda', __name__, url_prefix='/demanda')
 
 @bp.route('/', methods=['GET'])
-def error_demanda_predecida ():
+def get_demanda ():
     form = DemandaForm()
     form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
     
     demanda = Demanda.query.all()
-    return render_template('demanda/demandaPage.html', demanda=demanda, form=form) 
+    return render_template('demanda/demandaPage.html', demanda=demanda, form=form)  
 
 
 @bp.route('/', methods=['POST'])

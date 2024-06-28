@@ -166,7 +166,7 @@ class Demanda(db.Model):
     cantidad = db.Column(db.Integer, nullable=False)
     fecha_d= db.Column(db.Date, nullable=False)
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'), nullable=False)
-    articulo = db.relationship('Articulo', backref='demanda') # trae el nombre articulo de la Demanda
+    articulo = db.relationship('Articulo', backref='demanda') 
     
     @classmethod
     def existe_demanda(cls, articulo_id, fecha): #cls es self pero para el metodo
@@ -191,236 +191,280 @@ class DemandaPredecida(db.Model):
 
     @staticmethod
     def error_predecir_promedio_movil(articulo_id, cantidad_de_periodos):
-        #Buscamos la cantidad de periodos que vamos a predecir para generar el error
-        parametro_general= ParametrosGeneralesPrediccion.query.first()
-        periodos_a_predecir= parametro_general.cantidad_periodos_a_predecir
-        modelo_calculo_error= parametro_general.modelo_calculo_error
+        try:
+            # Buscamos la cantidad de periodos que vamos a predecir para generar el error
+            parametro_general = ParametrosGeneralesPrediccion.query.first()
+            periodos_a_predecir = parametro_general.cantidad_periodos_a_predecir
+            modelo_calculo_error = parametro_general.modelo_calculo_error
 
-        #Buscamos la cantidad de demandas reales necesarias para calcular el error
-        demandas_reales = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).limit(cantidad_de_periodos+periodos_a_predecir).all()
-        #Verificamos que haya suficientes demanda para calcular el error
-        if len(demandas_reales) < cantidad_de_periodos+periodos_a_predecir:
-                raise ValueError("No hay suficientes datos históricos para el calcular el error")
-        demandas_predecida = []
-        #Calculo del predicciones
-        for i in range(periodos_a_predecir):
-            #Toma las demandas anteriores a la del mes que vamos a predecir
-            subconjunto_demandas = demandas_reales[i+1: i+1+ cantidad_de_periodos]
-            # Calcular el promedio
-            prediccion = sum(demanda.cantidad for demanda in subconjunto_demandas) / cantidad_de_periodos
-            demandas_predecida.append(prediccion)
-        
-        #Calculamo el error
-        error=modelo_calculo_error.calcular_error(demandas_reales[0:periodos_a_predecir ],demandas_predecida)
-        return error
-    
+            # Buscamos la cantidad de demandas reales necesarias para calcular el error
+            demandas_reales = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).limit(cantidad_de_periodos + periodos_a_predecir).all()
+
+            # Verificamos que haya suficientes demanda para calcular el error
+            if len(demandas_reales) < cantidad_de_periodos + periodos_a_predecir:
+                raise ValueError("No hay suficientes datos históricos para calcular el error")
+
+            demandas_predecida = []
+            # Calculo del predicciones
+            for i in range(periodos_a_predecir):
+                # Toma las demandas anteriores a la del mes que vamos a predecir
+                subconjunto_demandas = demandas_reales[i+1: i+1+cantidad_de_periodos]
+                # Calcular el promedio
+                prediccion = sum(demanda.cantidad for demanda in subconjunto_demandas) / cantidad_de_periodos
+                demandas_predecida.append(prediccion)
+
+            # Calculamos el error
+            error = modelo_calculo_error.calcular_error(demandas_reales[:periodos_a_predecir], demandas_predecida)
+            return error
+        except Exception as e:
+            print(f"Error en error_predecir_promedio_movil: {e}")
+            raise
+
     @staticmethod
-    def predecir_promedio_movil(articulo_id, cantidad_de_periodos,mes, año):
-         # Obtener la fecha de referencia (mes y año)
-        fecha_referencia = datetime(year=año, month=mes, day=1)
+    def predecir_promedio_movil(articulo_id, cantidad_de_periodos, mes, año):
+        try:
+            # Obtener la fecha de referencia (mes y año)
+            fecha_referencia = datetime(year=año, month=mes, day=1)
 
-        # Obtener los últimos n valores de demanda real que incluyan la fecha de referencia y los n periodos anteriores
-        demandas = Demanda.query.filter(
-            Demanda.articulo_id == articulo_id,
-            Demanda.fecha_d <= fecha_referencia,  
-            Demanda.fecha_d >= fecha_referencia - timedelta(days=31*cantidad_de_periodos), 
-        ).order_by(Demanda.fecha_d.desc()).all()
+            # Obtener los últimos n valores de demanda real que incluyan la fecha de referencia y los n periodos anteriores
+            demandas = Demanda.query.filter(
+                Demanda.articulo_id == articulo_id,
+                Demanda.fecha_d <= fecha_referencia,
+                Demanda.fecha_d >= fecha_referencia - timedelta(days=31 * cantidad_de_periodos)
+            ).order_by(Demanda.fecha_d.desc()).all()
 
-        if len(demandas) < cantidad_de_periodos:
-            raise ValueError("No hay suficientes datos históricos para el número de periodos solicitado")
+            if len(demandas) < cantidad_de_periodos:
+                raise ValueError("No hay suficientes datos históricos para el número de periodos solicitado")
 
-        # Calcular el promedio
-        subconjunto_demandas = demandas[1: cantidad_de_periodos] #Sub conjunto con las demandas realeas, anteriores al mes que estoy prediciendo
-        promedio = sum(demanda.cantidad for demanda in subconjunto_demandas) / cantidad_de_periodos
-        return int(promedio)
+            # Calcular el promedio
+            subconjunto_demandas = demandas[1: cantidad_de_periodos]  # Subconjunto con las demandas reales, anteriores al mes que estoy prediciendo
+            promedio = sum(demanda.cantidad for demanda in subconjunto_demandas) / cantidad_de_periodos
+            return int(promedio)
+        except Exception as e:
+            print(f"Error en predecir_promedio_movil: {e}")
+            raise
 
     @staticmethod
     def error_predecir_promedio_movil_ponderado(articulo_id, cantidad_de_periodos, factores_ponderacion):
-        #Buscamos la cantidad de periodos que vamos a predecir para generar el error
-        parametro_general= ParametrosGeneralesPrediccion.query.first()
-        periodos_a_predecir= parametro_general.cantidad_periodos_a_predecir
-        modelo_calculo_error= parametro_general.modelo_calculo_error
+        try:
+            # Buscamos la cantidad de periodos que vamos a predecir para generar el error
+            parametro_general = ParametrosGeneralesPrediccion.query.first()
+            periodos_a_predecir = parametro_general.cantidad_periodos_a_predecir
+            modelo_calculo_error = parametro_general.modelo_calculo_error
 
-        #Buscamos la cantidad de demandas reales necesarias para calcular el error
-        demandas_reales = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).limit(cantidad_de_periodos+periodos_a_predecir).all()
-        #Verificamos que haya suficientes demanda para calcular el error
-        if len(demandas_reales) < cantidad_de_periodos+periodos_a_predecir:
-                raise ValueError("No hay suficientes datos históricos para el calcular el error")
-        demandas_predecida = []
-        #Calculo del predicciones
-        for i in range(periodos_a_predecir):
-            #Toma las demandas anteriores a la del mes que vamos a predecir
-            subconjunto_demandas = demandas_reales[i+1: i+1+ cantidad_de_periodos]
-            # Calcular el promedio
-            prediccion = sum(demanda.cantidad * factor for demanda,factor in zip(subconjunto_demandas,factores_ponderacion)) / cantidad_de_periodos
-            demandas_predecida.append(prediccion)
-        
-        #Calculamo el error
-        error=modelo_calculo_error.calcular_error(demandas_reales[0:periodos_a_predecir ],demandas_predecida)
-        return error
-    
+            # Buscamos la cantidad de demandas reales necesarias para calcular el error
+            demandas_reales = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).limit(cantidad_de_periodos + periodos_a_predecir).all()
+
+            # Verificamos que haya suficientes demanda para calcular el error
+            if len(demandas_reales) < cantidad_de_periodos + periodos_a_predecir:
+                raise ValueError("No hay suficientes datos históricos para calcular el error")
+
+            demandas_predecida = []
+            # Calculo del predicciones
+            for i in range(periodos_a_predecir):
+                # Toma las demandas anteriores a la del mes que vamos a predecir
+                subconjunto_demandas = demandas_reales[i+1: i+1+cantidad_de_periodos]
+                # Calcular el promedio
+                prediccion = sum(demanda.cantidad * factor for demanda, factor in zip(subconjunto_demandas, factores_ponderacion)) / cantidad_de_periodos
+                demandas_predecida.append(prediccion)
+
+            # Calculamos el error
+            error = modelo_calculo_error.calcular_error(demandas_reales[:periodos_a_predecir], demandas_predecida)
+            return error
+        except Exception as e:
+            print(f"Error en error_predecir_promedio_movil_ponderado: {e}")
+            raise
+
     @staticmethod
-    def predecir_promedio_movil_ponderado(articulo_id, cantidad_de_periodos, factores_ponderacion,mes,año):
-        # Obtener la fecha de referencia (mes y año)
-        fecha_referencia = datetime(year=año, month=mes, day=1)
+    def predecir_promedio_movil_ponderado(articulo_id, cantidad_de_periodos, factores_ponderacion, mes, año):
+        try:
+            # Obtener la fecha de referencia (mes y año)
+            fecha_referencia = datetime(year=año, month=mes, day=1)
 
-        # Obtener los últimos n valores de demanda real que incluyan la fecha de referencia y los n periodos anteriores
-        demandas = Demanda.query.filter(
-            Demanda.articulo_id == articulo_id,
-            Demanda.fecha_d <= fecha_referencia,  
-            Demanda.fecha_d >= fecha_referencia - timedelta(days=31*cantidad_de_periodos), 
-        ).order_by(Demanda.fecha_d.desc()).all()
+            # Obtener los últimos n valores de demanda real que incluyan la fecha de referencia y los n periodos anteriores
+            demandas = Demanda.query.filter(
+                Demanda.articulo_id == articulo_id,
+                Demanda.fecha_d <= fecha_referencia,
+                Demanda.fecha_d >= fecha_referencia - timedelta(days=31 * cantidad_de_periodos)
+            ).order_by(Demanda.fecha_d.desc()).all()
 
-        if len(demandas) < cantidad_de_periodos:
-            raise ValueError("No hay suficientes datos históricos para el número de periodos solicitado")
+            if len(demandas) < cantidad_de_periodos:
+                raise ValueError("No hay suficientes datos históricos para el número de periodos solicitado")
 
-        # Calcular el promedio
-        subconjunto_demandas = demandas[1: cantidad_de_periodos] #Sub conjunto con las demandas realeas, anteriores al mes que estoy prediciendo
-        promedio = sum(demanda.cantidad * factor  for demanda , factor in zip(subconjunto_demandas,factores_ponderacion)) / cantidad_de_periodos
-        return int(promedio)
+            # Calcular el promedio
+            subconjunto_demandas = demandas[1: cantidad_de_periodos]  # Subconjunto con las demandas reales, anteriores al mes que estoy prediciendo
+            promedio = sum(demanda.cantidad * factor for demanda, factor in zip(subconjunto_demandas, factores_ponderacion)) / cantidad_de_periodos
+            return int(promedio)
+        except Exception as e:
+            print(f"Error en predecir_promedio_movil_ponderado: {e}")
+            raise
 
     @staticmethod
     def error_predecir_promedio_movil_suavizado(articulo_id, alfa, prediccion_raiz):
-        #Buscamos la cantidad de periodos que vamos a predecir para generar el error
-        parametro_general= ParametrosGeneralesPrediccion.query.first()
-        periodos_a_predecir= parametro_general.cantidad_periodos_a_predecir
-        modelo_calculo_error= parametro_general.modelo_calculo_error
+        try:
+            # Buscamos la cantidad de periodos que vamos a predecir para generar el error
+            parametro_general = ParametrosGeneralesPrediccion.query.first()
+            periodos_a_predecir = parametro_general.cantidad_periodos_a_predecir
+            modelo_calculo_error = parametro_general.modelo_calculo_error
 
-        # Obtener demandas reales desde la mas reciente a la mas antigua
-        demandas_reales = Demanda.query.filter_by(articulo_id=articulo_id).order_by(DemandaPredecida.año.desc(), DemandaPredecida.mes.desc()).limit(periodos_a_predecir+1).all()
-        #Las ordenamos desde la mas antigua a la mas nueva
-        demandas_reales.reverse()
+            # Obtener demandas reales desde la más reciente a la más antigua
+            demandas_reales = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).limit(periodos_a_predecir + 1).all()
+            # Las ordenamos desde la más antigua a la más nueva
+            demandas_reales.reverse()
 
-        if len(demandas_reales) < periodos_a_predecir+1:
-                raise ValueError("No hay suficientes datos históricos para el calcular el error")
+            if len(demandas_reales) < periodos_a_predecir + 1:
+                raise ValueError("No hay suficientes datos históricos para calcular el error")
 
-        if prediccion_raiz is None:
-            # Si no se proporciona una predicción raíz, usar la demanda del último periodo como predicción inicial
-            prediccion_raiz = demandas_reales[0].cantidad
+            if prediccion_raiz is None:
+                # Si no se proporciona una predicción raíz, usar la demanda del último periodo como predicción inicial
+                prediccion_raiz = demandas_reales[0].cantidad
 
-        # Calculo de predicciones 
-        demandas_predecida = []
-        for i in range(periodos_a_predecir):
-            if i == 0 :
-                demanda_predecida= prediccion_raiz + alfa*(demandas_reales[i]-prediccion_raiz)
-                demandas_predecida.append(demanda_predecida)
-            else:
-                demanda_predecida= demandas_predecida[i-1] + alfa*(demandas_reales[i]-demandas_predecida[i-1])
-                demandas_predecida.append(demanda_predecida)
-        
+            # Calculo de predicciones
+            demandas_predecida = []
+            for i in range(periodos_a_predecir):
+                if i == 0:
+                    demanda_predecida = prediccion_raiz + alfa * (demandas_reales[i].cantidad - prediccion_raiz)
+                    demandas_predecida.append(demanda_predecida)
+                else:
+                    demanda_predecida = demandas_predecida[i-1] + alfa * (demandas_reales[i].cantidad - demandas_predecida[i-1])
+                    demandas_predecida.append(demanda_predecida)
 
-        error=modelo_calculo_error.calcular_error(demandas_reales[1:periodos_a_predecir+1 ],demandas_predecida)
-        return error
-    
+            error = modelo_calculo_error.calcular_error(demandas_reales[1:periodos_a_predecir + 1], demandas_predecida)
+            return error
+        except Exception as e:
+            print(f"Error en error_predecir_promedio_movil_suavizado: {e}")
+            raise
+
+    @staticmethod
     def predecir_promedio_movil_suavizado(articulo_id, alfa, prediccion_raiz):
-        # Obtener el último valor de demanda
-        ultima_demanda = DemandaPredecida.query.filter_by(articulo_id=articulo_id).order_by(DemandaPredecida.año.desc(), DemandaPredecida.mes.desc()).first()
-        if not ultima_demanda:
-            raise ValueError("No hay datos históricos para el artículo solicitado")
+        try:
+            # Obtener el último valor de demanda
+            ultima_demanda = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).first()
+            if not ultima_demanda:
+                raise ValueError("No hay datos históricos para el artículo solicitado")
 
-        if prediccion_raiz is None:
-            # Si no se proporciona una predicción raíz, usar la demanda del último periodo como predicción inicial
-            prediccion_raiz = ultima_demanda.cantidad
+            if prediccion_raiz is None:
+                # Si no se proporciona una predicción raíz, usar la demanda del último periodo como predicción inicial
+                prediccion_raiz = ultima_demanda.cantidad
 
-        # Calcular la predicción usando suavización exponencial
-        prediccion = prediccion_raiz + alfa * (ultima_demanda.cantidad - prediccion_raiz)
-        return int(prediccion)
+            # Calcular la predicción usando suavización exponencial
+            prediccion = prediccion_raiz + alfa * (ultima_demanda.cantidad - prediccion_raiz)
+            return int(prediccion)
+        except Exception as e:
+            print(f"Error en predecir_promedio_movil_suavizado: {e}")
+            raise
 
     @staticmethod
     def error_predecir_regresion_lineal(articulo_id):
-        #Buscamos la cantidad de periodos que vamos a predecir para generar el error
-        parametro_general= ParametrosGeneralesPrediccion.query.first()
-        periodos_a_predecir= parametro_general.cantidad_periodos_a_predecir
-        modelo_calculo_error= parametro_general.modelo_calculo_error
+        try:
+            # Buscamos la cantidad de periodos que vamos a predecir para generar el error
+            parametro_general = ParametrosGeneralesPrediccion.query.first()
+            periodos_a_predecir = parametro_general.cantidad_periodos_a_predecir
+            modelo_calculo_error = parametro_general.modelo_calculo_error
 
-        #Trae la ultimas 50 demandas ordenadas desde la mas antigua a la mas nueva
-        demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).limit(50).all()
-        # Dividir la lista de demandas
-        demandas_para_calculo = demandas[:len(demandas)-periodos_a_predecir]
-        demandas_reales = demandas[-periodos_a_predecir:]
-        if len(demandas) < 2:
-            raise ValueError("No hay suficientes datos históricos para realizar la predicción")
+            # Trae las últimas 50 demandas ordenadas desde la más antigua a la más nueva
+            demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).limit(50).all()
+            if len(demandas) < 2:
+                raise ValueError("No hay suficientes datos históricos para realizar la predicción")
 
-        n = len(demandas_para_calculo)
-        suma_tiempo = sum(range(1, n + 1))
-        suma_demanda = sum(demanda.cantidad for demanda in demandas_para_calculo)
-        promedio_tiempo = suma_tiempo / n
-        promedio_demanda = suma_demanda / n
+            # Dividir la lista de demandas
+            demandas_para_calculo = demandas[:len(demandas)-periodos_a_predecir]
+            demandas_reales = demandas[-periodos_a_predecir:]
 
-        suma_tiempo_demanda = sum((i - promedio_tiempo) * (demandas_para_calculo[i - 1].cantidad - promedio_demanda) for i in range(1, n + 1))
-        suma_tiempo_cuadrado = sum((i - promedio_tiempo) ** 2 for i in range(1, n + 1))
+            n = len(demandas_para_calculo)
+            suma_tiempo = sum(range(1, n + 1))
+            suma_demanda = sum(demanda.cantidad for demanda in demandas_para_calculo)
+            promedio_tiempo = suma_tiempo / n
+            promedio_demanda = suma_demanda / n
 
-        m = suma_tiempo_demanda / suma_tiempo_cuadrado
-        b = promedio_demanda - m * promedio_tiempo
+            suma_tiempo_demanda = sum((i - promedio_tiempo) * (demandas_para_calculo[i - 1].cantidad - promedio_demanda) for i in range(1, n + 1))
+            suma_tiempo_cuadrado = sum((i - promedio_tiempo) ** 2 for i in range(1, n + 1))
 
-        #Calculo predicciones 
-        demandas_predecida = []
-        for i in range(n,n+periodos_a_predecir):
-            demanda_predecida=m * (i + 1) + b
-            demandas_predecida.append(demanda_predecida)
+            m = suma_tiempo_demanda / suma_tiempo_cuadrado
+            b = promedio_demanda - m * promedio_tiempo
 
-        #Calulo de error
-        error=modelo_calculo_error.calcular_error(demandas_reales,demandas_predecida)
-        return error
+            # Calculo de predicciones
+            demandas_predecida = []
+            for i in range(n, n + periodos_a_predecir):
+                demanda_predecida = m * (i + 1) + b
+                demandas_predecida.append(demanda_predecida)
+
+            # Calculo de error
+            error = modelo_calculo_error.calcular_error(demandas_reales, demandas_predecida)
+            return error
+        except Exception as e:
+            print(f"Error en error_predecir_regresion_lineal: {e}")
+            raise
 
     @staticmethod
     def predecir_regresion_lineal(articulo_id):
-        demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).all()
-        if len(demandas) < 2:
-            raise ValueError("No hay suficientes datos históricos para realizar la predicción")
+        try:
+            demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).all()
+            if len(demandas) < 2:
+                raise ValueError("No hay suficientes datos históricos para realizar la predicción")
 
-        n = len(demandas)
-        suma_tiempo = sum(range(1, n + 1))
-        suma_demanda = sum(demanda.cantidad for demanda in demandas)
-        promedio_tiempo = suma_tiempo / n
-        promedio_demanda = suma_demanda / n
+            n = len(demandas)
+            suma_tiempo = sum(range(1, n + 1))
+            suma_demanda = sum(demanda.cantidad for demanda in demandas)
+            promedio_tiempo = suma_tiempo / n
+            promedio_demanda = suma_demanda / n
 
-        suma_tiempo_demanda = sum((i - promedio_tiempo) * (demandas[i - 1].cantidad - promedio_demanda) for i in range(1, n + 1))
-        suma_tiempo_cuadrado = sum((i - promedio_tiempo) ** 2 for i in range(1, n + 1))
+            suma_tiempo_demanda = sum((i - promedio_tiempo) * (demandas[i - 1].cantidad - promedio_demanda) for i in range(1, n + 1))
+            suma_tiempo_cuadrado = sum((i - promedio_tiempo) ** 2 for i in range(1, n + 1))
 
-        m = suma_tiempo_demanda / suma_tiempo_cuadrado
-        b = promedio_demanda - m * promedio_tiempo
+            m = suma_tiempo_demanda / suma_tiempo_cuadrado
+            b = promedio_demanda - m * promedio_tiempo
 
-        prediccion = m * (n + 1) + b
-        return prediccion
-
-    @staticmethod #Creo que no lo pide esto
-    def calcular_coeficiente_correlacion(articulo_id, predicciones):
-        demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).all()
-        if len(demandas) != len(predicciones):
-            raise ValueError("El número de predicciones no coincide con el número de demandas reales")
-
-        promedio_real = sum(demanda.cantidad for demanda in demandas) / len(demandas)
-        promedio_prediccion = sum(predicciones) / len(predicciones)
-
-        suma_real_prediccion = sum((demanda.cantidad - promedio_real) * (prediccion - promedio_prediccion) for demanda, prediccion in zip(demandas, predicciones))
-        suma_real_cuadrado = sum((demanda.cantidad - promedio_real) ** 2 for demanda in demandas)
-        suma_prediccion_cuadrado = sum((prediccion - promedio_prediccion) ** 2 for prediccion in predicciones)
-
-        r_cuadrado = suma_real_prediccion ** 2 / (suma_real_cuadrado * suma_prediccion_cuadrado)
-        return math.sqrt(r_cuadrado)
+            prediccion = m * (n + 1) + b
+            return prediccion
+        except Exception as e:
+            print(f"Error en predecir_regresion_lineal: {e}")
+            raise
 
     @staticmethod
-    def calcular_indice_estacionalidad(articulo_id, mes,año):
-        # Consulta para obtener las demandas de los últimos tres años
-        años = [año - i for i in range(1, 4)]  
-        demandas= Demanda.query.filter(
-            Demanda.articulo_id == articulo_id,
-            extract('year', Demanda.fecha_d).in_(años)
-        ).all()
-        
-        if len(demandas) < 12 * 3:
-            raise ValueError("No hay suficientes datos históricos para realizar la predicción")
+    def calcular_coeficiente_correlacion(articulo_id, predicciones):
+        try:
+            demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).all()
+            if len(demandas) != len(predicciones):
+                raise ValueError("El número de predicciones no coincide con el número de demandas reales")
 
-        demanda_promedio_historica = sum(demanda.cantidad for demanda in demandas) / len(demandas)
-        demanda_promedio_mes= 0
-        for demanda in demandas:
-            if demanda.fecha_d.month == mes:
-                demanda_promedio_mes = demanda_promedio_mes + demanda.cantidad
-        #Este indice se multiplica por la prediccion obtenida por algun metodo. Eso ajusta la estacionalidad
-        indice_de_estacionalidad_mensual=demanda_promedio_mes/demanda_promedio_historica
+            promedio_real = sum(demanda.cantidad for demanda in demandas) / len(demandas)
+            promedio_prediccion = sum(predicciones) / len(predicciones)
 
-        return indice_de_estacionalidad_mensual
+            suma_real_prediccion = sum((demanda.cantidad - promedio_real) * (prediccion - promedio_prediccion) for demanda, prediccion in zip(demandas, predicciones))
+            suma_real_cuadrado = sum((demanda.cantidad - promedio_real) ** 2 for demanda in demandas)
+            suma_prediccion_cuadrado = sum((prediccion - promedio_prediccion) ** 2 for prediccion in predicciones)
+
+            r_cuadrado = suma_real_prediccion ** 2 / (suma_real_cuadrado * suma_prediccion_cuadrado)
+            return math.sqrt(r_cuadrado)
+        except Exception as e:
+            print(f"Error en calcular_coeficiente_correlacion: {e}")
+            raise
+
+    @staticmethod
+    def calcular_indice_estacionalidad(articulo_id, mes, año):
+        try:
+            # Consulta para obtener las demandas de los últimos tres años
+            años = [año - i for i in range(1, 4)]
+            demandas = Demanda.query.filter(
+                Demanda.articulo_id == articulo_id,
+                extract('year', Demanda.fecha_d).in_(años)
+            ).all()
+
+            if len(demandas) < 12 * 3:
+                raise ValueError("No hay suficientes datos históricos para calcular el índice de estacionalidad")
+
+            demanda_promedio_historica = sum(demanda.cantidad for demanda in demandas) / len(demandas)
+            demanda_promedio_mes = sum(demanda.cantidad for demanda in demandas if demanda.fecha_d.month == mes)
+
+            # Este índice se multiplica por la predicción obtenida por algún método. Eso ajusta la estacionalidad
+            indice_de_estacionalidad_mensual = demanda_promedio_mes / demanda_promedio_historica
+
+            return indice_de_estacionalidad_mensual
+        except Exception as e:
+            print(f"Error en calcular_indice_estacionalidad: {e}")
+            raise
+
 
     @staticmethod #No entiendo bien que es lo que hace 
     def predecir_ajuste_estacional(articulo_id, indices_estacionales):
@@ -507,9 +551,12 @@ class ErrorDemandaPredecida(db.Model):
     __tablename__ = 'error_demanda_predecida'
     id = db.Column(db.Integer, primary_key=True)
     articulo_ID= db.Column(db.Integer, db.ForeignKey('articulo.id'), nullable=False)
-    articulo_nombre = db.relationship('Articulo') # trae el nombre articulo de la Demanda
+    articulo = db.relationship('Articulo') # trae el nombre articulo de la Demanda
     nombreMetodo = db.Column(db.String(100), nullable=False)
     error_DP = db.Column(db.Float)
     cantidad_periodos = db.Column(db.Integer)
     numero_raiz=db.Column(db.Float)
     alfa = db.Column(db.Float)
+    factores_de_ponderacion=db.Column(db.String(100))
+
+    

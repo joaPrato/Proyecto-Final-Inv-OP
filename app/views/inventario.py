@@ -7,7 +7,6 @@ from app.models import Articulo, OrdenCompra
 bp = Blueprint('inventario', __name__, url_prefix='/inventario')
 
 @bp.route('/', methods=['GET', 'POST'])
-
 def articulos_a_reponer_bajo_stock():
     # Obtener todos los artículos
     articulos = Articulo.query.all()
@@ -18,7 +17,7 @@ def articulos_a_reponer_bajo_stock():
 
     # Filtrar artículos con modelo Intervalo fijo que hayan pasado el tiempo de pedido desde la fecha de la última orden de compra
     # Fecha actual
-    fecha_actual = datetime.now().date()
+    fecha_actual = datetime.datetime.now().date()
     for articulo in articulos:
         if articulo.modelo_inventario.nombre == 'Intervalo fijo':
             ultima_orden = OrdenCompra.query.filter_by(articulo_id=articulo.id).order_by(OrdenCompra.fecha.desc()).first()
