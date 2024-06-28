@@ -66,24 +66,28 @@ def promedio_movil_ponderado():
         
         try:
             
-            prediccion = DemandaPredecida.error_predecir_promedio_movil_ponderado(articulo_id, periodos, factores_ponderacion)
-            flash(f'Demanda predecida usando Promedio Móvil Ponderado: {prediccion}', 'success')
-            nueva_demanda_predecida = DemandaPredecida(
-                    cantidad_periodos=periodos,
-                    articulo_id=articulo_id,
-                    nombreMetodo= 'promedio movil ponderado'
+            error = DemandaPredecida.error_predecir_promedio_movil_ponderado(articulo_id, periodos, factores_ponderacion)
+            flash(f'Error calculado con exito:', 'success')
+            erroDemandaPredecida = ErrorDemandaPredecida(
+                    articulo_ID=articulo_id,
+                    error_DP=error,
+                    nombreMetodo= 'promedio movil ponderado',
+                    #metodo_calculo_error=ParametrosGeneralesPrediccion.query.first().modelo_calculo_error.nombre,
+                    factores_de_ponderacion= str(factores_ponderacion)
                 ) 
             try:
-                db.session.add(nueva_demanda_predecida)
+                db.session.add(erroDemandaPredecida)
                 db.session.commit()
-                flash('Demanda error predecida guardada con éxito!', 'success')
-            except ValueError as e:
-                flash(str(e), 'danger')     
-            return redirect(url_for('demandaPredecida.get_error'))          
-    
+                flash('Error generado con éxito', 'success')
+                return render_template('demanda_predecida/index.html', form=form)
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Error al generar el error con PMP: {str(e)}', 'danger')      
+        
         except ValueError as e:
             flash(str(e), 'danger')
-        return redirect(url_for('demanda_predecida.resultados'))
+
+        return render_template('demanda_predecida/index.html', form=form)
     
     if form.errors:
         flash(f'Errores en el formulario: {form.errors}', 'danger')

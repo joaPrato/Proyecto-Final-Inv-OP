@@ -41,7 +41,7 @@
                                 <label>{{ form.articulo_id.label }}</label>
                                 {{ form.articulo_id(class="form-control mb-3") }}
                                 {{ form.cantidad_periodos.label }} {{ form.cantidad_periodos(class="form-control mb-3") }}
-                                {{ form.submitPromedioMovil(class="btn btn-primary") }}
+                                <!--{{ form.submitPromedioMovil(class="btn btn-primary") }}-->
                             </div>
                         </div>    
                     </form>
@@ -61,7 +61,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for errores in errores %}
+                    {% for error in errores %}
                         {% if error.nombreMetodo == 'promedio movil' %}
                             <tr>
                             <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
@@ -125,7 +125,7 @@
                    {% if error.nombreMetodo == 'promedio movil ponderado' %}
                    <tr>
                         <td class="text-center align-middle">{{error.id}}</td>
-                        <td class="text-center align-middle">{{ error.articulo_nombre.articulo_nombre }}</td>
+                        <td class="text-center align-middle">{{ error.articulo.articulo_nombre }}</td>
                         <td class="text-center align-middle">{{ error.nombreMetodo}}</td>
                         <td class="text-center align-middle">{{ error.error_DP }}</td>
                         <td class="text-center align-middle">{{ error.cantidad_periodos }}</td>
@@ -151,7 +151,7 @@
                                 {{ form.articulo_id(class="form-control mb-3") }}
                                 {{ form.alfa.label }} {{ form.alfa(class="form-control mb-3") }}
                                 {{ form.prediccion_raiz.label }} {{ form.prediccion_raiz(class="form-control mb-3") }}
-                                {{ form.submitPromedioMovilSuavizado(class="btn btn-primary") }}
+                                <!--{{ form.submitPromedioMovil(class="btn btn-primary") }}-->
                             </div>
                         </div>        
                     </form>     
@@ -170,7 +170,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for errores in errores %}
+                    {% for error in errores %}
                         {% if error.nombreMetodo == 'promedio movil suavizado' %}
                             <tr>
                             <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
@@ -198,7 +198,7 @@
                             <div class="col">
                                 <label>{{ form.articulo_id.label }}</label>
                                 {{ form.articulo_id(class="form-control mb-3") }}
-                                {{ form.submitRegresionLineal(class="btn btn-primary") }}
+                                <!--{{ form.submitPromedioMovil(class="btn btn-primary") }}-->
                             </div>
                         </div>        
                     </form>     
@@ -215,7 +215,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for errores in errores %}
+                    {% for error in errores %}
                         {% if error.nombreMetodo == 'regresion lineal' %}
                             <tr>
                             <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
@@ -240,7 +240,7 @@
                             <div class="col">
                                 <label>{{ form.articulo_id.label }}</label>
                                 {{ form.articulo_id(class="form-control mb-3") }}
-                                {{ form.submitAjusteEstacional(class="btn btn-primary") }}
+                                <!--{{ form.submitPromedioMovil(class="btn btn-primary") }}-->
                             </div>
                         </div>        
                     </form>     
@@ -256,7 +256,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for errores in errores %}
+                    {% for error in errores %}
                         {% if error.nombreMetodo == 'ajuste estacional' %}
                             <tr>
                             <td class="text-center align-middle">{{ form.articulo_id.nombre_articulo }}</td>
