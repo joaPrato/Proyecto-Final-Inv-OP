@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app import db
-from app.models import DemandaPredecida, Articulo
-from app.forms import AjusteEstacionalForm, ParametrosGeneralesPrediccionForm, PromedioMovilForm, PromedioMovilPonderadoForm, PromedioMovilSuavizadoForm, RegresionLinealForm
+from app.models import *
+from app.forms import  ParametrosGeneralesPrediccionForm
 
 bp = Blueprint('demanda_predecida', __name__, url_prefix='/demanda_predecida')
 
@@ -12,11 +12,13 @@ def parametros():
         # Guarda los parámetros generales
         flash('Parámetros guardados exitosamente', 'success')
         return redirect(url_for('demanda_predecida.parametros'))
-    return render_template('demanda_predecida/parametros.html', form=form)
+    return render_template('demanda_predecida/parametros.html', form=form, )
 
 @bp.route('/promedio_movil', methods=['GET', 'POST'])
 def promedio_movil():
-    form = PromedioMovilForm()
+    form = ParametrosGeneralesPrediccionForm()
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+
     if form.validate_on_submit():
         articulo_id = form.articulo_id.data
         periodos = form.cantidad_periodos.data
@@ -30,7 +32,9 @@ def promedio_movil():
 
 @bp.route('/promedio_movil_ponderado', methods=['GET', 'POST'])
 def promedio_movil_ponderado():
-    form = PromedioMovilPonderadoForm()
+    form = ParametrosGeneralesPrediccionForm()
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+
     if form.validate_on_submit():
         articulo_id = form.articulo_id.data
         periodos = form.cantidad_periodos.data
@@ -45,7 +49,9 @@ def promedio_movil_ponderado():
 
 @bp.route('/promedio_movil_ponderado', methods=['GET', 'POST'])
 def promedio_movil_suavizado():
-    form = PromedioMovilSuavizadoForm()
+    form = ParametrosGeneralesPrediccionForm()
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+
     if form.validate_on_submit():
         articulo_id = form.articulo_id.data
         alfa = form.alfa.data
@@ -60,7 +66,9 @@ def promedio_movil_suavizado():
 
 @bp.route('/regresionLineal', methods=['GET', 'POST'])
 def regresion_lineal():
-    form = RegresionLinealForm()
+    form = ParametrosGeneralesPrediccionForm()
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+
     if form.validate_on_submit():
         try:
             articulo_id = form.articulo_id.data
@@ -72,7 +80,9 @@ def regresion_lineal():
 
 @bp.route('/ajusteEstacional', methods=['GET', 'POST'])
 def ajuste_estacional():
-    form = AjusteEstacionalForm()
+    form = ParametrosGeneralesPrediccionForm()
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+
     if form.validate_on_submit():
         try:
             articulo_id = form.articulo_id.data

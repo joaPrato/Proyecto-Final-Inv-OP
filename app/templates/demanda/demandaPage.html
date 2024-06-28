@@ -24,28 +24,28 @@
   <!-- Tab panes -->
   <div class="tab-content" id="demandaTabContent">
     <!-- Pestaña Calcular Demanda -->
-    <div class="tab-pane fade {% if not demanda_consulta %}show active{% endif %}" id="calcular" role="tabpanel" aria-labelledby="calcular-tab">
-      <div class="card mt-3">
-        <div class="card-body">
-          <form method="POST" action="{{ url_for('demanda.crear_demanda') }}">
-            {{ form.hidden_tag() }}
-            <div class="row mb-3">
-              <div class="col">
-                <label>{{ form.articulo_id.label }}</label>
-                {{ form.articulo_id(class="form-control mb-3") }}
-              </div>
-              <div class="col">
-                <label>{{ form.fecha_d.label }}</label>
-                {{ form.fecha_d(class="form-control mb-3") }}
-              </div>
+  <div class="tab-pane fade {% if not demanda_consulta %}show active{% endif %}" id="calcular" role="tabpanel" aria-labelledby="calcular-tab">
+    <div class="card mt-3">
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('demanda.crear_demanda') }}">
+          {{ form.hidden_tag() }}
+          <div class="row mb-3">
+            <div class="col">
+              <label>{{ form.articulo_id.label }}</label>
+              {{ form.articulo_id(class="form-control mb-3") }}
             </div>
-            <div class="col d-flex justify-content-end">
-              {{ form.submit(class="btn btn-primary") }}
+            <div class="col">
+              <label>{{ form.fecha_d.label }}</label>
+              {{ form.fecha_d(class="form-control mb-3") }}
             </div>
-          </form>
-        </div>
+          </div>
+          <div class="col d-flex justify-content-end">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
       </div>
     </div>
+  </div>
     <!-- Fin Pestaña Calcular Demanda -->
 
     <!-- Pestaña Ver Demanda -->
