@@ -5,13 +5,10 @@
 {% endblock %}
 
 {% block body %}
-  <h2>Predicción por Regresión Lineal</h2>
   <form method="POST" action="">
     {{ form.hidden_tag() }}
-    <p>
-      {{ form.articulo_id.label }}<br>
-      {{ form.articulo_id(size=32) }}
-    </p>
-    <p>{{ form.submit() }}</p>
+    
+    {{ form.articulo_id.label }} {{ form.articulo_id() }}
+    {{ form.submitRegresionLineal() }}
   </form>
 {% endblock %}

@@ -68,29 +68,17 @@ class DemandaForm(FlaskForm):
     submit = SubmitField('Calcular Demanda')
     
 class ParametrosGeneralesPrediccionForm(FlaskForm):
-    cantidad_periodos_a_predecir = IntegerField('Cantidad de Periodos a Predecir', validators=[DataRequired()])
-    error_aceptable = FloatField('Error Aceptable', validators=[DataRequired()])
-    modelo_calculo_error = SelectField('Método de Cálculo de Error', choices=[('MAD', 'MAD'), ('MSE', 'MSE'), ('MAPE', 'MAPE')], validators=[DataRequired()])
-    submit = SubmitField('Guardar Parámetros')
-
-class PromedioMovilForm(FlaskForm):
-    cantidad_periodos = IntegerField('Cantidad de Periodos', validators=[DataRequired()])
-    submit = SubmitField('Predecir Demanda')
-
-class PromedioMovilPonderadoForm(FlaskForm):
-    factor_ponderacion = FloatField('Factor de Ponderación', validators=[DataRequired()])
-    cantidad_periodos = IntegerField('Cantidad de Periodos', validators=[DataRequired()])
-    submit = SubmitField('Predecir Demanda')
-
-class PromedioMovilSuavizadoForm(FlaskForm):
-    alfa = FloatField('Valor del Coeficiente Alfa', validators=[DataRequired()])
-    prediccion_raiz = FloatField('Predicción Raíz', validators=[DataRequired()])
-    submit = SubmitField('Predecir Demanda')
-
-class RegresionLinealForm(FlaskForm):
-    articulo_id = IntegerField('ID del Artículo', validators=[DataRequired()])
-    submit = SubmitField('Predecir')
-
-class AjusteEstacionalForm(FlaskForm):
-    articulo_id = IntegerField('ID del Artículo', validators=[DataRequired()])
-    submit = SubmitField('Predecir')
+    cantidad_periodos_a_predecir = IntegerField('Cantidad de Periodos a Predecir')
+    error_aceptable = FloatField('Error Aceptable')
+    modelo_calculo_error = SelectField('Método de Cálculo de Error', choices=[('MAD', 'MAD'), ('MSE', 'MSE'), ('MAPE', 'MAPE')])
+    cantidad_periodos = IntegerField('Cantidad de Periodos')
+    articulo_id = SelectField('Artículo', coerce=int )
+    factor_ponderacion = FloatField('Factor de Ponderación')
+    alfa = FloatField('Valor del Coeficiente Alfa')
+    prediccion_raiz = FloatField('Predicción Raíz')
+    submitParametrosGeneralesPrediccion = SubmitField('Guardar Parámetros')
+    submitPromedioMovil = SubmitField('Predecir Demanda')
+    submitPromedioMovilPonderado = SubmitField('Predecir Demanda')
+    submitPromedioMovilSuavizado = SubmitField('Predecir Demanda')
+    submitRegresionLineal = SubmitField('Predecir')
+    submitAjusteEstacional = SubmitField('Predecir')
