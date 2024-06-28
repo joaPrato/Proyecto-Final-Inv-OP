@@ -8,16 +8,13 @@ bp = Blueprint('demanda_predecida', __name__, url_prefix='/demanda_predecida')
 @bp.route('/parametros', methods=['GET', 'POST'])
 def parametros():
     form = ParametrosGeneralesPrediccionForm()
-    if form.validate_on_submit():
-        # Guarda los parámetros generales
-        flash('Parámetros guardados exitosamente', 'success')
-        return redirect(url_for('demanda_predecida.parametros'))
+    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+
     return render_template('demanda_predecida/parametros.html', form=form, )
 
 @bp.route('/promedio_movil', methods=['GET', 'POST'])
 def promedio_movil():
     form = ParametrosGeneralesPrediccionForm()
-    form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
 
     if form.validate_on_submit():
         articulo_id = form.articulo_id.data
