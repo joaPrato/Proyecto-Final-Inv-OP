@@ -189,8 +189,8 @@ class DemandaPredecida(db.Model):
     
     @staticmethod
     def predecir_promedio_movil(articulo_id, periodos):
-        # Obtener los últimos n valores de demanda
-        demandas = DemandaPredecida.query.filter_by(articulo_id=articulo_id).order_by(DemandaPredecida.año.desc(), DemandaPredecida.mes.desc()).limit(periodos).all()
+        # Obtener los últimos n valores de demanda real
+        demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).limit(periodos).all()
         if len(demandas) < periodos:
             raise ValueError("No hay suficientes datos históricos para el número de periodos solicitado")
 
@@ -201,7 +201,9 @@ class DemandaPredecida(db.Model):
     @staticmethod
     def predecir_promedio_movil_ponderado(articulo_id, periodos, factores_ponderacion):
         # Obtener los últimos n valores de demanda
-        demandas = DemandaPredecida.query.filter_by(articulo_id=articulo_id).order_by(DemandaPredecida.año.desc(), DemandaPredecida.mes.desc()).limit(periodos).all()
+        demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.desc()).limit(periodos).all()
+        if periodos != len(factores_ponderacion):
+            raise ValueError("La cantidad de periodos y factores debe ser igual")
         if len(demandas) < periodos:
             raise ValueError("No hay suficientes datos históricos para el número de periodos solicitado")
 
