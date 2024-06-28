@@ -13,6 +13,13 @@
         {{ form.factor_ponderacion2.label }} {{ form.factor_ponderacion2() }}<br>
         {{ form.factor_ponderacion3.label }} {{ form.factor_ponderacion3() }}<br>
         {{ form.submit() }}
+        <div class="col">
+            <label>{{ form.fecha_inicio.label }}</label>
+            <input type="month" name="fecha_inicio" class="form-control mb-3" value="{{ request.args.get('fecha_inicio', '') }}">
+            
+            <label>{{ form.fecha_fin.label }}</label>
+            <input type="month" name="fecha_fin" class="form-control mb-3" value="{{ request.args.get('fecha_fin', '') }}">
+        </div>
     </form>
 
 {% endblock %}

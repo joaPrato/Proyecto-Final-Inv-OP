@@ -76,6 +76,8 @@ class ParametrosGeneralesPrediccionForm(FlaskForm):
     factor_ponderacion = FloatField('Factor de Ponderación')
     alfa = FloatField('Valor del Coeficiente Alfa')
     prediccion_raiz = FloatField('Predicción Raíz')
+    fecha_inicio = DateField('Fecha de Inicio', format='%Y-%m')
+    fecha_fin = DateField('Fecha de Fin', format='%Y-%m')
     submitParametrosGeneralesPrediccion = SubmitField('Guardar Parámetros')
     submitPromedioMovil = SubmitField('Predecir Demanda')
     submitPromedioMovilPonderado = SubmitField('Predecir Demanda')

@@ -17,10 +17,10 @@ def index():
 def parametros():
     form = ParametrosGeneralesPrediccionForm()
     form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
-    if form.validate_on_submit():
+    #if form.validate_on_submit():
         # Guarda los parámetros generales
-        flash('Parámetros guardados exitosamente', 'success')
-        return redirect(url_for('demanda_predecida.parametros'))
+        #flash('Parámetros guardados exitosamente', 'success')
+        #return redirect(url_for('demanda_predecida.parametros')) POR AHORA NO LO ESTAMOS GUARDANDO 
     return render_template('demanda_predecida/index.html', form=form )
 
 
@@ -56,7 +56,7 @@ def promedio_movil_ponderado():
         return redirect(url_for('demanda_predecida.resultados'))
     return render_template('demanda_predecida/index.html', form=form)
 
-@bp.route('/promedio_movil_ponderado', methods=['GET', 'POST'])
+@bp.route('/promedio_movil_suavizado', methods=['GET', 'POST'])
 def promedio_movil_suavizado():
     form = ParametrosGeneralesPrediccionForm()
     form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]

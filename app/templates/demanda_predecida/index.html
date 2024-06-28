@@ -10,7 +10,7 @@
   <!-- Nav tabs -->
     <ul class="nav nav-tabs" id="demandaPredecidaTabs" role="tablist">
     <li class="nav-item">
-      <a class="nav-link" id="promedio-movil-tab" data-bs-toggle="tab" href="#promedio-movil" role="tab" aria-controls="promedio-movil" aria-selected="false">Promedio Móvil</a>
+      <a class="nav-link active" id="promedio-movil-tab" data-bs-toggle="tab" href="#promedio-movil" role="tab" aria-controls="promedio-movil" aria-selected="false">Promedio Móvil</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" id="PMP-tab" data-bs-toggle="tab" href="#promedio-movil-ponderado" role="tab" aria-controls="promedio-movil-ponderado" aria-selected="false">Promedio Móvil Ponderado</a>
@@ -25,7 +25,7 @@
         <a class="nav-link" id="ajuste-estacional-tab" data-bs-toggle="tab" href="#ajuste-estacional" role="tab" aria-controls="ajuste-estacional" aria-selected="false">Ajuste Estacional</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="comparar-tablas-tab" data-bs-toggle="tab" href="#promedio-movil" role="tab" aria-controls="promedio-movil" aria-selected="false">Comparar Tablas</a>
+        <a class="nav-link" id="comparar-tablas-tab" data-bs-toggle="tab" href="#comparar-tablas" role="tab" aria-controls="comparar-tablas" aria-selected="false">Comparar Tablas</a>
     </li>
     </ul>
 
@@ -33,20 +33,24 @@
         
        
         <!-- Pestaña Promedio Móvil -->
-        <div class="tab-pane fade" id="promedio-movil" role="tabpanel" aria-labelledby="promedio-movil-tab">
+        <div class="tab-pane fade show active" id="promedio-movil" role="tabpanel" aria-labelledby="promedio-movil-tab">
             <div class="card mt-3">
                 <div class="card-body">
                     <form method="POST">
                         {{ form.hidden_tag() }}
-                        <div class="row mb-3">
-                            
+                        <div class="row mb-3"> 
                             <div class="col">
                                 <label>{{ form.articulo_id.label }}</label>
                                 {{ form.articulo_id(class="form-control mb-3") }}
-                           
-                            {{ form.cantidad_periodos.label }} {{ form.cantidad_periodos(class="form-control mb-3") }}
-                            
-                            {{ form.submitPromedioMovil(class="btn btn-primary") }}
+                                {{ form.cantidad_periodos.label }} {{ form.cantidad_periodos(class="form-control mb-3") }}
+                                {{ form.submitPromedioMovil(class="btn btn-primary") }}
+                            </div>
+                            <div class="col">
+                                <label>{{ form.fecha_inicio.label }}</label>
+                                <input type="month" name="fecha_inicio" class="form-control mb-3" value="{{ request.args.get('fecha_inicio', '') }}">
+                                
+                                <label>{{ form.fecha_fin.label }}</label>
+                                <input type="month" name="fecha_fin" class="form-control mb-3" value="{{ request.args.get('fecha_fin', '') }}">
                             </div>
                     </form>
                 </div>
@@ -61,16 +65,80 @@
 
         <!-- Pestaña PMP Suavizado -->
         <div class="tab-pane fade" id="PMP-suavizado" role="tabpanel" aria-labelledby="PMP-suavizado-tab">
-            {% include 'demanda_predecida/promedio_movil_suavizado.html' %}
-        </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="row mb-3"> 
+                            <div class="col">
+                                <label>{{ form.articulo_id.label }}</label>
+                                {{ form.articulo_id(class="form-control mb-3") }}
+                                {{ form.alfa.label }} {{ form.alfa() }}
+                                {{ form.prediccion_raiz.label }} {{ form.prediccion_raiz() }}
+                                <div class="col">
+                                    <label>{{ form.fecha_inicio.label }}</label>
+                                    <input type="month" name="fecha_inicio" class="form-control mb-3" value="{{ request.args.get('fecha_inicio', '') }}">
+                                    
+                                    <label>{{ form.fecha_fin.label }}</label>
+                                    <input type="month" name="fecha_fin" class="form-control mb-3" value="{{ request.args.get('fecha_fin', '') }}">
+                                </div>
+
+                                {{ form.submitPromedioMovilSuavizado(class="btn btn-primary") }}
+                            </div>
+                        </div>        
+                    </form>     
+                </div>
+            </div>
+        </div>            
 
         <div class="tab-pane fade" id="regresion-lineal-tab" role="tabpanel" aria-labelledby="regresion-lineal" >
-            {% include 'demanda_predecida/regresion_lineal.html' %}
-        </div>    
+            <div class="card mt-3">
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="row mb-3"> 
+                            <div class="col">
+                                {{ form.hidden_tag() }}
+                                {{ form.articulo_id.label }} {{ form.articulo_id() }}
+                                {{ form.submitRegresionLineal(class="btn btn-primary") }}
+                                <div class="col">
+                                    <label>{{ form.fecha_inicio.label }}</label>
+                                    <input type="month" name="fecha_inicio" class="form-control mb-3" value="{{ request.args.get('fecha_inicio', '') }}">
+                                    
+                                    <label>{{ form.fecha_fin.label }}</label>
+                                    <input type="month" name="fecha_fin" class="form-control mb-3" value="{{ request.args.get('fecha_fin', '') }}">
+                                </div>
+                            </div>
+                        </div>        
+                    </form>     
+                </div>
+            </div>
+        </div>            
 
         <div class="tab-pane fade" id="ajuste-estacional-tab"  role="tabpanel" aria-labelledby="ajuste-estacional" >
-            {% include 'demanda_predecida/ajuste_estacional.html' %}
-        </div> 
+            <div class="card mt-3">
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <div class="row mb-3"> 
+                            <div class="col">
+                                <label>{{ form.articulo_id.label }}</label>
+                                {{ form.articulo_id(class="form-control mb-3") }}
+                                {{ form.submitAjusteEstacional() }}
+                                <div class="col">
+                                    <label>{{ form.fecha_inicio.label }}</label>
+                                    <input type="month" name="fecha_inicio" class="form-control mb-3" value="{{ request.args.get('fecha_inicio', '') }}">
+                                    
+                                    <label>{{ form.fecha_fin.label }}</label>
+                                    <input type="month" name="fecha_fin" class="form-control mb-3" value="{{ request.args.get('fecha_fin', '') }}">
+                                </div>
+                            </div>
+                        </div>        
+                    </form>     
+                </div>
+            </div>
+        </div>            
+
 
     </div>
 </div>
