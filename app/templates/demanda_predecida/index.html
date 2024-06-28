@@ -73,12 +73,11 @@
                             <div class="col">
                                 <label>{{ form.articulo_id.label }}</label>
                                 {{ form.articulo_id(class="form-control mb-3") }}
-                                {{ form.alfa.label }} {{ form.alfa() }}
-                                {{ form.prediccion_raiz.label }} {{ form.prediccion_raiz() }}
+                                {{ form.alfa.label }} {{ form.alfa(class="form-control mb-3") }}
+                                {{ form.prediccion_raiz.label }} {{ form.prediccion_raiz(class="form-control mb-3") }}
                                 <div class="col">
                                     <label>{{ form.fecha_inicio.label }}</label>
                                     <input type="month" name="fecha_inicio" class="form-control mb-3" value="{{ request.args.get('fecha_inicio', '') }}">
-                                    
                                     <label>{{ form.fecha_fin.label }}</label>
                                     <input type="month" name="fecha_fin" class="form-control mb-3" value="{{ request.args.get('fecha_fin', '') }}">
                                 </div>
