@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm # type: ignore
 from wtforms import StringField, IntegerField, FloatField, SelectField, SubmitField, DateField # type: ignore
 from wtforms.validators import DataRequired, NumberRange # type: ignore
 import datetime
-
+from wtforms import FieldList, FormField
 
 class ArticuloFormCrear(FlaskForm):
     codigo_articulo = IntegerField('Código artículo', validators=[DataRequired(), NumberRange(min=1)])
@@ -66,21 +66,31 @@ class DemandaForm(FlaskForm):
     fecha_inicio = DateField('Fecha de Inicio', format='%Y-%m')
     fecha_fin = DateField('Fecha de Fin', format='%Y-%m')
     submit = SubmitField('Calcular Demanda')
-    
+
+class FactorPonderacionForm(FlaskForm):
+    factor = FloatField('Factor', validators=[ NumberRange(min=0)])
+
+ 
 class ParametrosGeneralesPrediccionForm(FlaskForm):
     cantidad_periodos_a_predecir = IntegerField('Cantidad de Periodos a Predecir')
     error_aceptable = FloatField('Error Aceptable')
     modelo_calculo_error = SelectField('Método de Cálculo de Error', choices=[('MAD', 'MAD'), ('MSE', 'MSE'), ('MAPE', 'MAPE')])
     cantidad_periodos = IntegerField('Cantidad de Periodos')
     articulo_id = SelectField('Artículo', coerce=int )
-    factor_ponderacion = FloatField('Factor de Ponderación')
+    factores_ponderacion = FieldList(FormField(FactorPonderacionForm), min_entries=1, max_entries=10 )
     alfa = FloatField('Valor del Coeficiente Alfa')
     prediccion_raiz = FloatField('Predicción Raíz')
-    fecha_inicio = DateField('Fecha de Inicio', format='%Y-%m')
-    fecha_fin = DateField('Fecha de Fin', format='%Y-%m')
     submitParametrosGeneralesPrediccion = SubmitField('Guardar Parámetros')
     submitPromedioMovil = SubmitField('Predecir Demanda')
     submitPromedioMovilPonderado = SubmitField('Predecir Demanda')
     submitPromedioMovilSuavizado = SubmitField('Predecir Demanda')
     submitRegresionLineal = SubmitField('Predecir')
     submitAjusteEstacional = SubmitField('Predecir')
+
+    articulo_ID = SelectField('Artículo', coerce=int )
+    nombreMetodo = StringField('Nombre artículo')
+    error_DP =  FloatField('error Demanda Predecida')
+    cantidad_periodos = FloatField('cantidad_periodos')
+    numero_raiz=FloatField('Raíz')
+    alfa = FloatField('Valor del Coeficiente Alfa')
+    

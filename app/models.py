@@ -186,7 +186,8 @@ class DemandaPredecida(db.Model):
     articulo_id = db.Column(db.Integer, db.ForeignKey('articulo.id'), nullable=False)
     modelo_prediccion_id = db.Column(db.Integer, db.ForeignKey('modelo_prediccion_demanda.id'), nullable=False)
     error_calculado = db.Column(db.Float, nullable=True)
-    
+    articulo = db.relationship('Articulo', backref='demandaP') # trae el nombre articulo de la Demanda
+
     @staticmethod
     def predecir_promedio_movil(articulo_id, periodos):
         # Obtener los últimos n valores de demanda real
@@ -297,6 +298,17 @@ class DemandaPredecida(db.Model):
         intervalos_confianza = [(prediccion - z * desviacion_estandar, prediccion + z * desviacion_estandar) for prediccion in predicciones]
         return intervalos_confianza
 
+class ErrorDemandaPredecida(db.Model):
+    __tablename__ = 'error_demanda_predecida'
+    id = db.Column(db.Integer, primary_key=True)
+    articulo_ID= db.Column(db.Integer, db.ForeignKey('articulo.id'), nullable=False)
+    articulo_nombre = db.relationship('Articulo') # trae el nombre articulo de la Demanda
+    nombreMetodo = db.Column(db.String(100), nullable=False)
+    error_DP = db.Column(db.Float)
+    cantidad_periodos = db.Column(db.Integer)
+    numero_raiz=db.Column(db.Float)
+    alfa = db.Column(db.Float)
+    
 class ParametrosGeneralesPrediccion(db.Model):
     __tablename__ = 'parametros_generales_prediccion'
     id = db.Column(db.Integer, primary_key=True)
