@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app import db
 from app.models import *
-from app.forms import  ParametrosGeneralesPrediccionForm
+from app.forms import  ParametrosGeneralesPrediccionForm, PromedioMovilPonderadoForm
 
 bp = Blueprint('demanda_predecida', __name__, url_prefix='/demanda_predecida')
 
@@ -9,9 +9,11 @@ bp = Blueprint('demanda_predecida', __name__, url_prefix='/demanda_predecida')
 def index():
     form = ParametrosGeneralesPrediccionForm()
     form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
+    promedio_movil_ponderado_form=PromedioMovilPonderadoForm()
+    promedio_movil_ponderado_form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
     
     errores = ErrorDemandaPredecida.query.all()
-    return render_template('demanda_predecida/index.html', form=form , errores=errores)
+    return render_template('demanda_predecida/index.html', form=form , errores=errores,promedio_movil_ponderado_form=promedio_movil_ponderado_form)
 
 @bp.route('/parametros', methods=['GET', 'POST'])
 def parametros():
@@ -53,7 +55,8 @@ def promedio_movil():
 
 @bp.route('/promedio_movil_ponderado', methods=['GET', 'POST'])
 def promedio_movil_ponderado():
-    form = ParametrosGeneralesPrediccionForm()
+    flash('promedio movil ponderado', 'danger')   
+    form = PromedioMovilPonderadoForm()
     form.articulo_id.choices = [(m.id, m.nombre_articulo) for m in Articulo.query.all()]
 
     if form.validate_on_submit():
@@ -63,7 +66,7 @@ def promedio_movil_ponderado():
         
         try:
             
-            prediccion = DemandaPredecida.predecir_promedio_movil_ponderado(articulo_id, periodos, factores_ponderacion)
+            prediccion = DemandaPredecida.error_predecir_promedio_movil_ponderado(articulo_id, periodos, factores_ponderacion)
             flash(f'Demanda predecida usando Promedio Móvil Ponderado: {prediccion}', 'success')
             nueva_demanda_predecida = DemandaPredecida(
                     cantidad_periodos=periodos,
@@ -81,6 +84,11 @@ def promedio_movil_ponderado():
         except ValueError as e:
             flash(str(e), 'danger')
         return redirect(url_for('demanda_predecida.resultados'))
+    
+    if form.errors:
+        flash(f'Errores en el formulario: {form.errors}', 'danger')
+        print("Errores del formulario:", form.errors) 
+        
     return render_template('demanda_predecida/index.html', form=form)
 
 @bp.route('/promedio_movil_suavizado', methods=['GET', 'POST'])

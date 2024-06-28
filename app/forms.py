@@ -94,4 +94,9 @@ class ParametrosGeneralesPrediccionForm(FlaskForm):
     cantidad_periodos = FloatField('cantidad_periodos')
     numero_raiz=FloatField('Raíz')
     alfa = FloatField('Valor del Coeficiente Alfa')
-    
+
+class PromedioMovilPonderadoForm(FlaskForm):
+    articulo_id = SelectField('Artículo', coerce=int )
+    cantidad_periodos = IntegerField('Cantidad de Periodos')
+    factores_ponderacion = FieldList(FormField(FactorPonderacionForm), min_entries=1, max_entries=10 )
+    submit = SubmitField('Calcular error')

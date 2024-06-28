@@ -82,20 +82,27 @@
         <div class="tab-pane fade" id="promedio-movil-ponderado" role="tabpanel" aria-labelledby="PMP-tab">
             <div class="card mt-3">
                 <div class="card-body">
-                    <form method="POST">
-                        {{ form.hidden_tag() }}
+                    <form action="{{ url_for('demanda_predecida.promedio_movil_ponderado') }}" method="POST">
+                        {{ promedio_movil_ponderado_form.hidden_tag() }}
                         <div class="row mb-3"> 
-                            {{ form.articulo_id.label }} {{ form.articulo_id(class="form-control mb-3") }}<br>
-                            {{ form.cantidad_periodos.label }} {{ form.cantidad_periodos(class="form-control mb-3") }}<br>
+                            <div class="row">
+                                <label>{{ promedio_movil_ponderado_form.articulo_id.label }}</label>
+                                {{ promedio_movil_ponderado_form.articulo_id(class="form-control mb-3") }}
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label>{{ promedio_movil_ponderado_form.cantidad_periodos.label }}</label>
+                                {{ promedio_movil_ponderado_form.cantidad_periodos(class="form-control mb-3") }}
+                            </div>
                             <label class="form-label">Factores de Ponderación: Cada factor de ponderación debe ingresarse de forma individual, separados por comas o espacios</label>
-                            {% for field in form.factores_ponderacion %}
+                            {% for field in promedio_movil_ponderado_form.factores_ponderacion %}
                             <div class="input-group mb-3">
                             {{ field.factor(class="form-control mb-3") }}
                             </div>
                             {% endfor %}
                         </div>
                         <div class="mb-3">
-                            {{ form.submitPromedioMovilPonderado(class="btn btn-primary") }}
+                            {{ promedio_movil_ponderado_form.submit(class="btn btn-primary") }}
                         </div>
                     </div>        
                 </form>     

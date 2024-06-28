@@ -422,26 +422,6 @@ class DemandaPredecida(db.Model):
             raise
 
     @staticmethod
-    def calcular_coeficiente_correlacion(articulo_id, predicciones):
-        try:
-            demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).all()
-            if len(demandas) != len(predicciones):
-                raise ValueError("El número de predicciones no coincide con el número de demandas reales")
-
-            promedio_real = sum(demanda.cantidad for demanda in demandas) / len(demandas)
-            promedio_prediccion = sum(predicciones) / len(predicciones)
-
-            suma_real_prediccion = sum((demanda.cantidad - promedio_real) * (prediccion - promedio_prediccion) for demanda, prediccion in zip(demandas, predicciones))
-            suma_real_cuadrado = sum((demanda.cantidad - promedio_real) ** 2 for demanda in demandas)
-            suma_prediccion_cuadrado = sum((prediccion - promedio_prediccion) ** 2 for prediccion in predicciones)
-
-            r_cuadrado = suma_real_prediccion ** 2 / (suma_real_cuadrado * suma_prediccion_cuadrado)
-            return math.sqrt(r_cuadrado)
-        except Exception as e:
-            print(f"Error en calcular_coeficiente_correlacion: {e}")
-            raise
-
-    @staticmethod
     def calcular_indice_estacionalidad(articulo_id, mes, año):
         try:
             # Consulta para obtener las demandas de los últimos tres años
@@ -466,7 +446,7 @@ class DemandaPredecida(db.Model):
             raise
 
 
-    @staticmethod #No entiendo bien que es lo que hace 
+    @staticmethod  
     def predecir_ajuste_estacional(articulo_id, indices_estacionales):
         demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).all()
         if len(demandas) < 12 * 3:
@@ -478,27 +458,7 @@ class DemandaPredecida(db.Model):
 
         predicciones = [demanda_promedio_estacional * indices_estacionales[i % 12] for i in range(12)]
         return predicciones
-
-    @staticmethod #Creo que no lo pide esto
-    def calcular_intervalo_confianza(articulo_id, predicciones, nivel_confianza=0.95):
-        demandas = Demanda.query.filter_by(articulo_id=articulo_id).order_by(Demanda.fecha_d.asc()).all()
-        if len(demandas) != len(predicciones):
-            raise ValueError("El número de predicciones no coincide con el número de demandas reales")
-
-        n = len(demandas)
-        suma_error_cuadrado = sum((demanda.cantidad - prediccion) ** 2 for demanda, prediccion in zip(demandas, predicciones))
-        varianza = suma_error_cuadrado / (n - 2)
-        desviacion_estandar = math.sqrt(varianza)
-
-        z = 1.96  # valor Z para un nivel de confianza del 95%
-        if nivel_confianza == 0.99:
-            z = 2.576
-        elif nivel_confianza == 0.68:
-            z = 1.0
-
-        intervalos_confianza = [(prediccion - z * desviacion_estandar, prediccion + z * desviacion_estandar) for prediccion in predicciones]
-        return intervalos_confianza
-
+    
     
 class ParametrosGeneralesPrediccion(db.Model):
     __tablename__ = 'parametros_generales_prediccion'
