@@ -15,3 +15,18 @@
     </form>
 
 {% endblock %}
+<div class="tab-content" id="demandaPredecidaTabContent">
+    <!-- Pestaña Parámetros Generales -->
+    <div class="tab-pane fade show active" id="parametros" role="tabpanel" aria-labelledby="parametros-tab">
+        <div class="card mt-3">
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.cantidad_periodos_a_predecir.label }} {{ form.cantidad_periodos_a_predecir() }}<br>
+                    {{ form.error_aceptable.label }} {{ form.error_aceptable() }}<br>
+                    {{ form.modelo_calculo_error.label }} {{ form.modelo_calculo_error() }}<br>
+                    {{ form.submitParametrosGeneralesPrediccion(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
